@@ -1,0 +1,7 @@
+{
+  "name": "zekat_app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
