@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import {InitialGuard} from "./services/initial.guard";
+
 
 const routes: Routes = [
   {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
+    loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
+    canLoad:[InitialGuard]
   },
     {
     path: '',
@@ -26,6 +29,14 @@ const routes: Routes = [
   {
     path: 'fatwa',
     loadChildren: () => import('./pages/fatwa/fatwa.module').then( m => m.FatwaPageModule)
+  },
+  {
+    path: 'add-new-value',
+    loadChildren: () => import('./pages/add-new-value/add-new-value.module').then( m => m.AddNewValuePageModule)
+  },
+  {
+    path: 'setting',
+    loadChildren: () => import('./pages/setting/setting.module').then( m => m.SettingPageModule)
   },
 ];
 
