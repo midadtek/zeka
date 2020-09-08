@@ -16,15 +16,16 @@ import { DbServiceService } from './services/db-service.service';
 export class AppComponent {
 
   currency: any;
+  public currMap = new Map<string, string>()
 
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private db: DbServiceService,
-    private screenOrientation: ScreenOrientation
+    private screenOrientation: ScreenOrientation,
 
-  ) {
+) {
     this.initializeApp();    
   }
 
