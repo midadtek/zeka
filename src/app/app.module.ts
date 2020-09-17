@@ -13,10 +13,9 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-import { AddNewValueComponent } from './component/add-new-value/add-new-value.component';
 @NgModule({
-  declarations: [AppComponent,AddNewValueComponent],
-  entryComponents: [AddNewValueComponent],
+  declarations: [AppComponent],
+  entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, HttpClientModule],
   providers: [
     StatusBar,

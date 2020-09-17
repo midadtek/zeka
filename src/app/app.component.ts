@@ -4,6 +4,8 @@ import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { DbServiceService } from './services/db-service.service';
+import {Category_operationsService} from "./services/category_operations.service";
+
 
 
 
@@ -24,13 +26,17 @@ export class AppComponent {
     private statusBar: StatusBar,
     private db: DbServiceService,
     private screenOrientation: ScreenOrientation,
+    private  cat: Category_operationsService
+
 
 ) {
-    this.initializeApp();    
+    this.initializeApp();
+    this.cat.getGlobalRates()
   }
 
   initializeApp() {
-    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT).then(_=>{    console.log(this.screenOrientation.type);
+    this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT).then(_=>{
+      console.log(this.screenOrientation.type);
     } );
     
     this.platform.ready().then(() => {
