@@ -1,0 +1,36 @@
+<ion-header>
+    <ion-toolbar color='primary' class="ion-text-center">
+      <ion-title>settings</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+
+<ion-item>
+    <ion-label>تاريخ بداية الحول</ion-label>
+    <ion-datetime mode="ios" [value] = "formatedDate"  min='2019-01-01' [(ngModel)]="formatedDate" monthShortNames = "كانون ثاني, شباط, آذار, نيسان, آيار, حزيران, تموز, آب, أيلول, تشرين أول, تشرين ثاني, كانون أول"
+                  max='2040-12-31'  displayFormat="MMM DD, YYYY" (ionChange)='pickedDate($event.target.value)'></ion-datetime>
+</ion-item>
+    <ion-item>
+      <ion-label>اختر العملة</ion-label>
+      <ion-label></ion-label>
+      <ion-select mode="ios" interface="action-sheet" [ngModel]="currencyCode" [placeholder]="translatedCurrencyName"  (ionChange)="setCurrencyItem($event.target.value)">
+        <ion-select-option *ngFor='let currency of currencies' [value] = "currency.code" > {{currency.name}} </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+    <ion-label>اختر البلد</ion-label>
+    <ion-select mode="ios" interface="action-sheet" [ngModel]="countryCode" [placeholder]="translatedCountryName" (ionChange)='setCountryItem($event.target.value)'>
+      <ion-select-option  *ngFor='let country of allCountries' [value]="country.country_code">{{country.country_name}}</ion-select-option>
+    </ion-select>
+    </ion-item>
+
+
+
+
+ <ion-button [disabled]="!formatedDate || !currencyCode || !countryCode" (click)="setObject()" fill="outline" expand="block">حفظ</ion-button>
+
+
+</ion-content>
+
+

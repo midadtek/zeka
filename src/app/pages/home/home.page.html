@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar color="primary" >
+    <ion-menu-button color="light" slot="end"></ion-menu-button>
+    <ion-title class="title ion-text-center" >زكاتي</ion-title>
+    <ion-buttons slot="start">
+      <ion-button routerLink="/local-settings"><ion-icon name="settings"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-grid>
+    <ion-row class="forecast_container ion-nowrap">
+      <ion-col (click)="openBanner(0)">
+        <ion-avatar class="column">
+          <img [src]="images[0]"/>
+        </ion-avatar>
+      </ion-col>
+      <ion-col (click)="openBanner(1)">
+        <ion-avatar class="column">
+          <img [src]="images[1]" />
+        </ion-avatar>
+      </ion-col>
+      <ion-col (click)="openBanner(2)">
+        <ion-avatar class="column">
+          <img [src]="images[2]" />
+        </ion-avatar>
+      </ion-col>
+      <ion-col (click)="openBanner(3)">
+        <ion-avatar class="column">
+          <img [src]="images[3]" />
+        </ion-avatar>
+      </ion-col>
+      <ion-col (click)="openBanner(4)">
+        <ion-avatar class="column">
+          <img [src]="images[4]" />
+        </ion-avatar>
+      </ion-col>
+      <ion-col (click)="openBanner(5)">
+        <ion-avatar class="column">
+          <img [src]="images[5]" />
+        </ion-avatar>
+      </ion-col>
+      <ion-col (click)="openBanner(6)">
+        <ion-avatar class="column">
+          <img [src]="images[6]" />
+        </ion-avatar>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-header>
+<ion-content>
+
+<ion-grid>
+  <ion-row>
+    <ion-col size="6">
+      <div   class="contentCol ion-text-center" routerLink="/zekat-category">
+      <h3 style="margin-top: 33px;">حاسبة الزكاة</h3>
+      </div>
+    </ion-col>
+    <ion-col size="6">
+      <div  class="contentCol ion-text-center" routerLink="/fatwa">
+      <h3 style="margin-top: 33px;">فتاوى الزكاة</h3>
+      </div>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="6">
+      <div  class="contentCol ion-text-center" routerLink="/wallet">
+      <h3 style="margin-top: 33px;">المحفظة</h3>
+      </div>
+    </ion-col>
+    <ion-col  size="6">
+      <div  class="contentCol ion-text-center" (click) = 'charityModal()'>
+      <h3 style="margin-top: 33px;">الجمعيات</h3>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<ion-list style="border: 1px solid #306b00; border-radius: 15px; box-shadow: 5px 5px transparent;margin: 10px;" *ngIf="lastOperation && lastOperation.length !== 0">
+  <ion-item >
+    <ion-label>رصيد المحفظة  {{ !(goldTotalPrice + moneyTotalPrice + tradeTotalPrice + silverTotalPrice + stockTotalPrice + mutualTotalPrice) ? '0' : (goldTotalPrice + moneyTotalPrice + tradeTotalPrice + silverTotalPrice + stockTotalPrice + mutualTotalPrice).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-label>مقدار الزكاة للقيم المدخلة {{((goldTotalPrice+moneyTotalPrice+tradeTotalPrice+silverTotalPrice+stockTotalPrice+mutualTotalPrice) * 0.025 ).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-label>نصاب الزكاة هو : {{(goldPrice * 85).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+  </ion-item>
+</ion-list>
+<!--  page content-->
+  <ion-list style="align-content: space-between;" *ngIf="lastOperation">
+    <ion-list-header *ngIf="lastOperation.length !== 0">
+      <ion-label>آخر العمليات</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor='let lasOpe of lastOperation '>
+      <ion-label style="justify-content: space-between; display: flex" [class]="lasOpe?.id == id ? 'new' : ''">
+        <ion-label> نوع الزكاة : <span style="font-weight: bold">{{ lasOpe?.category_name }}</span></ion-label>
+      <ion-label *ngIf='lasOpe?.category_id==1'> {{ (+lasOpe?.d_val_1 + +lasOpe?.d_val_2 * 0.875 + +lasOpe?.d_val_3 * 0.75).toFixed(0)}} جرام 24 قيراط</ion-label>
+      <ion-label  *ngIf='lasOpe?.category_id==4'>  {{ lasOpe?.d_val_1.toFixed(0)}} جرام</ion-label>
+      <ion-label *ngIf='lasOpe?.category_id==5 || lasOpe?.category_id==6'>  {{ (lasOpe?.d_val_1 * lasOpe?.d_val_2).toFixed(0) |currency: translatedCurrencyName}}</ion-label>
+      <ion-label *ngIf='lasOpe?.category_id==2'> {{ lasOpe?.d_val_1}} {{lasOpe?.currency_type == newBase ? translatedCurrencyName : (lasOpe?.currency_type == 'USD' ? 'دولار' : (lasOpe?.currency_type == 'EUR' ?'يورو': lasOpe?.currency_type) )}}</ion-label>
+      <ion-label *ngIf='lasOpe?.category_id==3'> {{ (lasOpe?.d_val_1).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+      </ion-label>
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>
