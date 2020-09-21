@@ -42,8 +42,10 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      if(this.platform.is("cordova") || this.platform.is("capacitor")) {
       this.db.dbInit();
-    });     
+      }
+    });
   }
   
 }
