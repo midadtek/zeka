@@ -47,20 +47,13 @@ export class HomePage implements OnInit{
     private allRates: any;
     public newBase :string;
 
-  constructor(private platform: Platform,private auth:AuthService,private animationCtrl: AnimationController, private db: DbServiceService, private http: HttpClient, private modalCtrl: ModalController, private category: Category_operationsService, public loadingController: LoadingController,private route: ActivatedRoute){
-
-
+  constructor(private platform: Platform,private auth:AuthService,private animationCtrl: AnimationController, private db: DbServiceService, private http: HttpClient, private modalCtrl: ModalController, private category: Category_operationsService, public loadingController: LoadingController,private route: ActivatedRoute) {
+      this.sub = this.route.params.subscribe(params => {
+          this.id = +params.id
+      })
   }
 
  async ngOnInit() {
-     console.log(this.platform.is("cordova"))
-     console.log(this.platform.is("capacitor"))
-     console.log(this.platform.is("hybrid"))
-     console.log(this.platform.is("android"))
-     console.log(this.platform.is("ios"))
-     console.log(this.platform.is("desktop"))
-     console.log(this.platform.is("pwa"))
-
      this.getItem();
      this.category.getAllCharities();
      const loading = await this.loadingController.create({
@@ -77,16 +70,14 @@ export class HomePage implements OnInit{
             this.db.getoperations().subscribe(data => {
                 this.lastOperation = data;
             })
-            this.sub = this.route.params.subscribe(params => {
-                this.id = +params.id
-            })
+
         }else{
             this.category.getAllOperations().subscribe(data=> {
                 this.lastOperation = data;
             })
-            this.sub = this.route.params.subscribe(params => {
-                this.id = +params.id
-            })
+            // this.sub = this.route.params.subscribe(params => {
+            //     this.id = +params.id
+            // })
         }
         this.category.getObject().then(_ => {
             this.newBase =  this.category.currencyCode
@@ -150,7 +141,7 @@ ionViewDidEnter () {
             .duration(500)
             .iterations(1)
             .keyframes([
-                {offset: 0, background: '#25927f'},
+                {offset: 0, background: '#00ffd4'},
                 {offset: 0.25, background: '#08ecc4'},
                 {offset: 0.5, background: '#0a8071'},
                 {offset: 0.75, background: '#012d26'},

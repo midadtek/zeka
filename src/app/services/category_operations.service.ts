@@ -1,5 +1,5 @@
-import {Injectable, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
 
@@ -51,7 +51,7 @@ export class Category_operationsService {
   return this.http.get<any>('http://zakati.samhayir.com/api/v1/category/all')
 }
   getAllOperations() {
-    return this.http.get<any>('http://zakati.samhayir.com/api/v1/operation/all');
+    return this.http.get<any>('http://zakati.samhayir.com/api/v1/operation/allOperationOrderedLimited');
   }
   getAllCharities() {
     this.http.get<charity[]>('http://zakati.samhayir.com/api/v1/charity/all').subscribe(resData => {
@@ -67,9 +67,6 @@ export class Category_operationsService {
 
   getAllOperationByCategoryLimited(catId: string, limit: string) {
     return this.http.get<any>('http://zakati.samhayir.com/api/v1/operation/allOperationByCategory/'+catId+'/'+limit)
-  // // .subscribe(result => {
-  // //   this.category_operation.next(result);
-  // })
   }
 
   getAllOperationByCategory(catId){
@@ -86,13 +83,17 @@ export class Category_operationsService {
   getAllCountries() {
     return this.http.get<any[]>('http://zakati.samhayir.com/api/v1/country/all');
   }
+
+  deleteOperationById(id: number) {
+    return this.http.delete<any>('http://zakati.samhayir.com/api/v1/operation/delete/'+id);
+  }
   
   deleteOperationByCategoryId(id: number) {
     return this.http.delete<any>('http://zakati.samhayir.com/api/v1/operation/deleteByCategory/'+id);
   }
 
 getGlobalRates () {
- return this.http.get<any>('http://zakati.samhayir.com/api/v1/allPrices/price/USD')
+ return this.http.get<any>('http://zakati.samhayir.com/api/v1/allPrices/price/TRY')
      .subscribe(async resData => {
        console.log(resData)
        await Storage.set({

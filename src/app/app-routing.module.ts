@@ -4,67 +4,133 @@ import {InitialGuard} from "./services/initial.guard";
 
 
 const routes: Routes = [
-  {
-    path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
-    canLoad:[InitialGuard],
-  },
-  {
-    path:'home/:id',
-    loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
-
-  },
+  // {
+  //   path: 'home',
+  //   loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
+  //   canLoad:[InitialGuard],
+  // },
+  // {
+  //   path:'home/:id',
+  //   loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
+  //
+  // },
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
-    path: 'zekat-category',
+    path : 'home',
     children: [{
       path: '',
-      loadChildren: () => import('./pages/zekat-category/zekat-category.module').then(m => m.ZekatCategoryPageModule)
+      loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
+      canLoad:[InitialGuard]
+
+    },
+
+      {
+      path: 'zekat-category',
+        children:[{
+        path: '',
+      loadChildren: () => import('./pages/home/zekat-category/zekat-category.module').then(m => m.ZekatCategoryPageModule)
+        },
+          {
+            path: 'add-new-value',
+            loadChildren: () => import('./pages/home/zekat-category/add-new-value/add-new-value.module').then(m => m.AddNewValuePageModule)
+          }]
     },
       {
+        path: 'wallet',
+        children:[{
+          path:'',
+          loadChildren: () => import('./pages/home/wallet/wallet.module').then( m => m.WalletPageModule)
+        },
+          {
+            path: ':id',
+            loadChildren: () => import('./pages/home/wallet/added-values/added-values.module').then(m => m.AddedValuesPageModule)
+          }
+          ]
+      },
+      {
+        path: 'fatwa',
+        children:[{
+          path: '',
+          loadChildren: () => import('./pages/home/fatwa/fatwa.module').then( m => m.FatwaPageModule)
+        },
+          {
+            path: 'fatwa-list',
+            children:[{
+              path:'',
+            loadChildren: () => import('./pages/home/fatwa/fatwa-list/fatwa-list.module').then( m => m.FatwaListPageModule)
+            },
+              {
+                path: 'fatwa-detail',
+            loadChildren: () => import('./pages/home/fatwa/fatwa-list/fatwa-detail/fatwa-detail.module').then( m => m.FatwaDetailPageModule)
+
+              }]
+          },
+        ]
+      },
+
+      {
         path: ':id',
+        loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
+      },
+      ]
+  },
 
-        loadChildren: () => import('./pages/zekat-category/added-values/added-values.module').then(m => m.AddedValuesPageModule)
+  // {
+  //   path: 'zekat-category',
+  //   children: [{
+  //     path: '',
+  //     loadChildren: () => import('./pages/zekat-category/zekat-category.module').then(m => m.ZekatCategoryPageModule)
+  //   },
 
-      }
-    ],
-  },
-  {
-    path: 'auth',
-    loadChildren: () => import('./pages/auth/auth.module').then( m => m.AuthPageModule)
-  },
-  {
-    path: 'wallet',
-    loadChildren: () => import('./pages/wallet/wallet.module').then( m => m.WalletPageModule)
-  },
-  {
-    path: 'contact',
-    loadChildren: () => import('./pages/contact/contact.module').then( m => m.ContactPageModule)
-  },
-  {
-    path: 'fatwa',
-    loadChildren: () => import('./pages/fatwa/fatwa.module').then( m => m.FatwaPageModule)
-  },
-  {
-    path: 'add-new-value',
-    loadChildren: () => import('./pages/add-new-value/add-new-value.module').then( m => m.AddNewValuePageModule)
-  },
+    // ],
+  // },
+  // {
+  //   path: 'auth',
+  //   loadChildren: () => import('./pages/auth/auth.module').then( m => m.AuthPageModule)
+  // },
+  // {
+  //   path: 'wallet',
+  //   children:[{
+  //     path:'',
+  //   loadChildren: () => import('./pages/wallet/wallet.module').then( m => m.WalletPageModule)
+  //   },
+  //     {
+  //       path: ':id',
+  //       loadChildren: () => import('./pages/wallet/added-values/added-values.module').then(m => m.AddedValuesPageModule)
+  //
+  //     }]
+  // },
+  // {
+  //   path: 'contact',
+  //   loadChildren: () => import('./pages/contact/contact.module').then( m => m.ContactPageModule)
+  // },
+  // {
+  //   path: 'fatwa',
+  //   children:[{
+  //     path: '',
+  //   loadChildren: () => import('./pages/fatwa/fatwa.module').then( m => m.FatwaPageModule)
+  //   },
+  //     {
+  //       path: 'fatwa-list',
+  //       loadChildren: () => import('./pages/fatwa/fatwa-list/fatwa-list.module').then( m => m.FatwaListPageModule)
+  //     },
+  //     {
+  //       path: 'fatwa-detail',
+  //       loadChildren: () => import('./pages/fatwa/fatwa-list/fatwa-detail/fatwa-detail.module').then( m => m.FatwaDetailPageModule)
+  //     }]
+  // },
+  // {
+  //   path: 'add-new-value',
+  //   loadChildren: () => import('./pages/add-new-value/add-new-value.module').then( m => m.AddNewValuePageModule)
+  // },
   {
     path: 'setting',
     loadChildren: () => import('./pages/setting/setting.module').then( m => m.SettingPageModule)
-  },
-  {
-    path: 'local-settings',
-    loadChildren: () => import('./pages/local-settings/local-settings.module').then( m => m.LocalSettingsPageModule)
-  },
-  {
-    path: 'setting',
-    loadChildren: () => import('./pages/setting/setting.module').then( m => m.SettingPageModule)
-  },
+  }
 ];
 
 @NgModule({

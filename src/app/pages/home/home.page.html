@@ -3,7 +3,7 @@
     <ion-menu-button color="light" slot="end"></ion-menu-button>
     <ion-title class="title ion-text-center" >زكاتي</ion-title>
     <ion-buttons slot="start">
-      <ion-button routerLink="/local-settings"><ion-icon name="settings"></ion-icon></ion-button>
+      <ion-button routerLink="/setting"><ion-icon name="settings"></ion-icon></ion-button>
     </ion-buttons>
   </ion-toolbar>
   <ion-grid>
@@ -51,19 +51,19 @@
 <ion-grid>
   <ion-row>
     <ion-col size="6">
-      <div   class="contentCol ion-text-center" routerLink="/zekat-category">
+      <div   class="contentCol ion-text-center" routerLink="/home/zekat-category">
       <h3 style="margin-top: 33px;">حاسبة الزكاة</h3>
       </div>
     </ion-col>
     <ion-col size="6">
-      <div  class="contentCol ion-text-center" routerLink="/fatwa">
+      <div  class="contentCol ion-text-center" routerLink="/home/fatwa">
       <h3 style="margin-top: 33px;">فتاوى الزكاة</h3>
       </div>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col size="6">
-      <div  class="contentCol ion-text-center" routerLink="/wallet">
+      <div  class="contentCol ion-text-center" routerLink="/home/wallet">
       <h3 style="margin-top: 33px;">المحفظة</h3>
       </div>
     </ion-col>
@@ -92,12 +92,12 @@
     </ion-list-header>
     <ion-item *ngFor='let lasOpe of lastOperation '>
       <ion-label style="justify-content: space-between; display: flex" [class]="lasOpe?.id == id ? 'new' : ''">
-        <ion-label> نوع الزكاة : <span style="font-weight: bold">{{ lasOpe?.category_name }}</span></ion-label>
-      <ion-label *ngIf='lasOpe?.category_id==1'> {{ (+lasOpe?.d_val_1 + +lasOpe?.d_val_2 * 0.875 + +lasOpe?.d_val_3 * 0.75).toFixed(0)}} جرام 24 قيراط</ion-label>
-      <ion-label  *ngIf='lasOpe?.category_id==4'>  {{ lasOpe?.d_val_1.toFixed(0)}} جرام</ion-label>
-      <ion-label *ngIf='lasOpe?.category_id==5 || lasOpe?.category_id==6'>  {{ (lasOpe?.d_val_1 * lasOpe?.d_val_2).toFixed(0) |currency: translatedCurrencyName}}</ion-label>
-      <ion-label *ngIf='lasOpe?.category_id==2'> {{ lasOpe?.d_val_1}} {{lasOpe?.currency_type == newBase ? translatedCurrencyName : (lasOpe?.currency_type == 'USD' ? 'دولار' : (lasOpe?.currency_type == 'EUR' ?'يورو': lasOpe?.currency_type) )}}</ion-label>
-      <ion-label *ngIf='lasOpe?.category_id==3'> {{ (lasOpe?.d_val_1).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+        <ion-label> نوع الزكاة : <span style="font-style: italic">{{ lasOpe?.category_name }}</span></ion-label>
+      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==1'> {{ (+lasOpe?.d_val_1 + +lasOpe?.d_val_2 * 0.875 + +lasOpe?.d_val_3 * 0.75).toFixed(0)}} جرام 24 قيراط</ion-label>
+      <ion-label style="font-size: 15px;  "  *ngIf='lasOpe?.category_id==4'>  {{ lasOpe?.d_val_1.toFixed(0)}} جرام</ion-label>
+      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==5 || lasOpe?.category_id==6'>  {{ (lasOpe?.d_val_1 * lasOpe?.d_val_2).toFixed(0)}} {{ translatedCurrencyName}}</ion-label>
+      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==2'> {{ lasOpe?.d_val_1}} {{lasOpe?.currency_type == newBase ? translatedCurrencyName : (lasOpe?.currency_type == 'USD' ? 'دولار' : (lasOpe?.currency_type == 'EUR' ?'يورو': lasOpe?.currency_type) )}}</ion-label>
+      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==3'> {{ (lasOpe?.d_val_1).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
       </ion-label>
     </ion-item>
 
