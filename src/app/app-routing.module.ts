@@ -4,16 +4,6 @@ import {InitialGuard} from "./services/initial.guard";
 
 
 const routes: Routes = [
-  // {
-  //   path: 'home',
-  //   loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
-  //   canLoad:[InitialGuard],
-  // },
-  // {
-  //   path:'home/:id',
-  //   loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule),
-  //
-  // },
   {
     path: '',
     redirectTo: 'home',
@@ -60,14 +50,20 @@ const routes: Routes = [
           {
             path: 'fatwa-list',
             children:[{
-              path:'',
-            loadChildren: () => import('./pages/home/fatwa/fatwa-list/fatwa-list.module').then( m => m.FatwaListPageModule)
-            },
-              {
-                path: 'fatwa-detail',
-            loadChildren: () => import('./pages/home/fatwa/fatwa-list/fatwa-detail/fatwa-detail.module').then( m => m.FatwaDetailPageModule)
-
-              }]
+              path:':id',
+              children: [{
+                path:'',
+            loadChildren: () => import('./pages/home/fatwa/fatwa-list/fatwa-list.module').then( m => m.FatwaListPageModule),
+              },
+                {
+                  path:'fatwa-detail',
+                  children:[{
+                    path:':id',
+                    loadChildren: () => import('./pages/home/fatwa/fatwa-list/fatwa-detail/fatwa-detail.module').then( m => m.FatwaDetailPageModule),
+                    }]
+                }]
+            }
+            ]
           },
         ]
       },
