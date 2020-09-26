@@ -4,7 +4,6 @@ import {AlertController, LoadingController, ModalController} from '@ionic/angula
 import { Subscription} from 'rxjs';
 import {DbServiceService, operation} from 'src/app/services/db-service.service';
 import { Plugins } from '@capacitor/core';
-import {delay} from "rxjs/operators";
 import { Platform } from '@ionic/angular';
 
 import {CharityComponent} from "../../../component/charity/charity.component";
@@ -51,11 +50,12 @@ getOperationSubs:Subscription;
     public silverPrice: number;
     public defaultCountry: any;
     public defaultDate: any;
-    public newBase: string;
+    public currentBase: string;
     public allRates: any;
     private translatedCurrencyName: string;
     private lasOps: operation[];
-  constructor(private platform: Platform,private db: DbServiceService, private category: Category_operationsService, public alertController: AlertController, private loadingCtrl: LoadingController, private modalCtrl: ModalController) {}
+    private currencyIndex: number;
+  constructor(private platform: Platform,private db: DbServiceService, private categoryService: Category_operationsService, public alertController: AlertController, private loadingCtrl: LoadingController, private modalCtrl: ModalController) {}
 
   async presentAlertConfirm(id) {
     const deletionAlert = await this.alertController.create({
@@ -87,35 +87,20 @@ getOperationSubs:Subscription;
 
 
  async ngOnInit() {
-     this.category.getObject().then(_ => {
-         this.newBase = this.category.currencyCode
-         if (this.newBase) {
-             switch (this.newBase) {
-                 case 'TRY' :
-                     this.translatedCurrencyName = "ليرة تركية";
-                     break;
-                 case 'USD' :
-                     this.translatedCurrencyName = "دولار";
-                     break;
-                 case "EUR" :
-                     this.translatedCurrencyName = "يورو";
-                     break;
-                 case "KWD" :
-                     this.translatedCurrencyName = "دينار كويتي";
-                     break;
-                 default:
-                     return;
-             }
-         }
+     this.categoryService.getSettingObject().then(_ => {
+         this.currentBase = this.categoryService.currencyCode
+         this.currencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.currentBase);
+         console.log(this.currencyIndex);
+         this.translatedCurrencyName = this.categoryService.curreciesList[this.currencyIndex].name;
+         console.log(this.translatedCurrencyName);
      })
 
-     this.getItem()
  }
 ionViewWillEnter() {
-    this.getItem().then(_=>{
-     this.goldPrice = this.allRates.rates.gold * this.allRates.rates.rates[this.newBase]
-      this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.newBase]
-    })
+      this.getGlobalRatesObject().then(_=>{
+     this.goldPrice = this.allRates.rates.gold * this.allRates.rates.rates[this.currentBase]
+      this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.currentBase]
+
       if(this.platform.is("cordova") || this.platform.is("capacitor")){
     this.getOperationSubs = this.db.getoperations().subscribe(async data => {
         this.lasOps = data;
@@ -123,7 +108,7 @@ ionViewWillEnter() {
         this.isEmpty = data.length === 0;
         })
       }else{
-          this.getOperationSubs = this.category.getAllOperations().subscribe(async data => {
+          this.getOperationSubs = this.categoryService.getAllOperations().subscribe(async data => {
               this.lasOps = data;
               this.isEmpty = data.length === 0;
           })
@@ -136,7 +121,7 @@ ionViewWillEnter() {
 
        this.tradeOperations = [];
        this.tradeOperations_total = 0;
-       
+
        this.silverOperations = [];
        this.silverOperations_total = 0;
 
@@ -148,8 +133,7 @@ ionViewWillEnter() {
 
        this.fitirOperations = [];
        this.fitirOperations_total = 0;
-
-
+      })
   }
 
   ionViewDidEnter() {
@@ -185,10 +169,10 @@ ionViewWillEnter() {
               this.gold_total += +this.goldOperations[i].d_val_1 + (+this.goldOperations[i].d_val_2 * 0.875) + (+this.goldOperations[i].d_val_3 * 0.75);
           }
           for(let i = 0; i < this.moneyOperations.length; i++) {
-              if(this.moneyOperations[i].currency_type !== this.newBase){
-                  this.totalTransformedMoney += this.moneyOperations[i].d_val_1 * (1/this.allRates.rates.rates[this.moneyOperations[i].currency_type]) * this.allRates.rates.rates[this.newBase];
+              if(this.moneyOperations[i].currency_type !== this.currentBase){
+                  this.totalTransformedMoney += this.moneyOperations[i].d_val_1 * (1/this.allRates.rates.rates[this.moneyOperations[i].currency_type]) * this.allRates.rates.rates[this.currentBase];
               }
-              else if(this.moneyOperations[i].currency_type == this.newBase) {
+              else if(this.moneyOperations[i].currency_type == this.currentBase) {
                   this.totalTransformedMoney += this.moneyOperations[i].d_val_1;
               }
           }
@@ -217,7 +201,7 @@ ionViewWillEnter() {
             cssClass: 'my-custom-class',
             componentProps:{
                 'willPayValue':(this.gold_total * this.goldPrice * 0.025) + (this.totalTransformedMoney * 0.025) + (this.tradeOperations_total * 0.025) + (this.silverOperations_total * this.silverPrice * 0.025) + (this.stocksOperations_total * 0.025) + (this.Mutual_fundsOperations_total * 0.025),
-                'currency': this.newBase
+                'currency': this.currentBase
             }
         });
         return await charityModal.present();
@@ -252,18 +236,18 @@ ionViewWillEnter() {
       this.db.loadAllOperations()
     })
       }else {
-        return  this.category.deleteOperationByCategoryId(id).subscribe(_=>{
-            this.getOperationSubs = this.category.getAllOperations().subscribe(async data => {
+        return  this.categoryService.deleteOperationByCategoryId(id).subscribe(_=>{
+            this.getOperationSubs = this.categoryService.getAllOperations().subscribe(async data => {
                 this.lasOps = data;
                 this.isEmpty = data.length === 0;
-                this.ionViewWillEnter();
+                // this.ionViewWillEnter();
                 this.ionViewDidEnter();
             });
         })
       }
 
   }
-    async getItem() {
+    async getGlobalRatesObject() {
         const ret = await Storage.get({key: 'GLOBAL-RATES'});
         this.allRates = JSON.parse(ret.value);
         console.log(this.allRates)

@@ -12,7 +12,7 @@
     <ion-row>
       <ion-col style="margin-top: 15px;" size-xs="6" size-lg = "6" size-md="4" *ngFor="let cat of zekat_category">
 <!--        <div   class="contentCol" (click)="onAddValue(cat?.id)">-->
-          <ion-img [src]="'assets/images/'+cat?.id+'.png'" class="contentCol" (click)="onAddValue(cat?.id)"></ion-img>
+          <ion-img [src]="'assets/images/'+cat?.id+'.png'" class="contentCol" [routerLink]="cat?.id"></ion-img>
 <!--        </div>-->
           <h3 style="margin-top:15px;" class="ion-text-center">{{cat?.category_name}}</h3>
       </ion-col>

@@ -45,17 +45,20 @@ export class HomePage implements OnInit{
     theFinalTotal: number;
     private sub: Subscription;
     private allRates: any;
-    public newBase :string;
+    public currentBase :string;
+    private currencyIndex: any;
+    public moneyCurrencyIndex: number;
+    public translatedMoneyCurrencyName: any;
 
-  constructor(private platform: Platform,private auth:AuthService,private animationCtrl: AnimationController, private db: DbServiceService, private http: HttpClient, private modalCtrl: ModalController, private category: Category_operationsService, public loadingController: LoadingController,private route: ActivatedRoute) {
+  constructor(private platform: Platform,private auth:AuthService,private animationCtrl: AnimationController, private db: DbServiceService, private http: HttpClient, private modalCtrl: ModalController, private categoryService: Category_operationsService, public loadingController: LoadingController,private route: ActivatedRoute) {
       this.sub = this.route.params.subscribe(params => {
           this.id = +params.id
       })
   }
 
  async ngOnInit() {
-     this.getItem();
-     this.category.getAllCharities();
+     this.getGlobalRatesObject();
+     this.categoryService.getAllCharities();
      const loading = await this.loadingController.create({
          cssClass: 'my-custom-class',
          duration:1000,
@@ -72,35 +75,29 @@ export class HomePage implements OnInit{
             })
 
         }else{
-            this.category.getAllOperations().subscribe(data=> {
+            this.categoryService.getAllOperations().subscribe(data=> {
+                console.log(data)
                 this.lastOperation = data;
             })
             // this.sub = this.route.params.subscribe(params => {
             //     this.id = +params.id
             // })
         }
-        this.category.getObject().then(_ => {
-            this.newBase =  this.category.currencyCode
-            this.goldPrice = +this.allRates.rates.gold * +this.allRates.rates.rates[this.newBase]
-            this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.newBase]
-            if(this.newBase) {
-                switch (this.newBase) {
-                    case 'TRY' :
-                        this.translatedCurrencyName = "ليرة تركية";
-                        break;
-                    case 'USD' :
-                        this.translatedCurrencyName = "دولار";
-                        break;
-                    case "EUR" :
-                        this.translatedCurrencyName = "يورو";
-                        break;
-                    case "KWD" :
-                        this.translatedCurrencyName = "دينار كويتي";
-                        break;
-                    default:
-                        return;
-                }
-            }
+        this.categoryService.getSettingObject().then(_ => {
+            this.currentBase =  this.categoryService.currencyCode
+            this.goldPrice = this.allRates.rates.gold * this.allRates.rates.rates[this.currentBase];
+
+            console.log(this.allRates.rates.rates[this.currentBase]);
+            console.log(this.goldPrice);
+            this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.currentBase];
+            this.currencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.currentBase);
+            console.log(this.currencyIndex);
+            this.translatedCurrencyName = this.categoryService.curreciesList[this.currencyIndex].name;
+            console.log(this.translatedCurrencyName);
+            // this.moneyCurrencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.pickedCurrency);
+            // console.log(this.currencyIndex);
+            // this.translatedMoneyCurrencyName = this.categoryService.curreciesList['TRY'].name;
+            // console.log(this.translatedMoneyCurrencyName);
         })
     }
 ionViewDidEnter () {
@@ -117,10 +114,10 @@ ionViewDidEnter () {
                 this.goldTotalPrice += (+this.lastOperation[i].d_val_1 + +this.lastOperation[i].d_val_2 * 0.875 + +this.lastOperation[i].d_val_3 * 0.75) * +this.goldPrice;
             } else if (this.lastOperation[i].category_id === 2) {
 
-                if (this.lastOperation[i].currency_type !== this.newBase) {
-                    this.moneyTotalPrice += this.lastOperation[i].d_val_1 * (1 / this.allRates.rates.rates[this.lastOperation[i].currency_type]) * this.allRates.rates.rates[this.newBase];
+                if (this.lastOperation[i].currency_type !== this.currentBase) {
+                    this.moneyTotalPrice += this.lastOperation[i].d_val_1 * (1 / this.allRates.rates.rates[this.lastOperation[i].currency_type]) * this.allRates.rates.rates[this.currentBase];
                 }
-                if (this.lastOperation[i].currency_type == this.newBase) {
+                if (this.lastOperation[i].currency_type == this.currentBase) {
                     this.moneyTotalPrice += +this.lastOperation[i].d_val_1;
                 }
             } else if (this.lastOperation[i].category_id === 3) {
@@ -136,6 +133,8 @@ ionViewDidEnter () {
     }, 500)
 
     setTimeout(() => {
+        console.log(this.getMoneyCurrencyName('TRY'));
+
         this.animationCtrl.create()
             .addElement(document.querySelector('.new'))
             .duration(500)
@@ -148,12 +147,14 @@ ionViewDidEnter () {
                 {offset: 1, background: 'var(--background)'}
             ])
                     .play()
-                }, 2000)
+                }, 500)
 
 }
-    async getItem() {
+    async getGlobalRatesObject() {
         const ret = await Storage.get({key: 'GLOBAL-RATES'});
         this.allRates = JSON.parse(ret.value);
+        console.log(this.allRates);
+        console.log(typeof (this.allRates.rates.gold))
         }
     async charityModal() {
       const homeCharityModal = await this.modalCtrl.create({
@@ -177,5 +178,8 @@ ionViewDidEnter () {
         });
         modal.present();
     }
+    getMoneyCurrencyName (currency: string) {
+      let name = this.categoryService.curreciesList.filter(I => I.code == currency)
+        return name[0].name;
+    }
 }
-//

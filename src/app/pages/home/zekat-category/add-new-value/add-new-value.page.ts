@@ -28,100 +28,66 @@ export interface country  {
   templateUrl: './add-new-value.page.html',
   styleUrls: ['./add-new-value.page.scss'],
 })
-export class AddNewValuePage implements OnInit, OnDestroy{
-  availableCurrencies:any[];
+export class AddNewValuePage implements OnInit{
+  availableCurrencies = this.categoryService.curreciesList;
   categorySub: Subscription;
   id: number;
   catEl: any;
   goldPrice: number;
   silverPrice: number;
   operations: operation[];
-  defaultCountry: string;
-  availableCountries:country[];
-  fitir_value: number = 0;
+  availableCountries = this.categoryService.countriesList;
   pickedCurrency: string;
   private sub: Subscription;
   private defaultDate: any;
   private allRates: any;
-  public newBase: string;
-  public translatedCurrencyName: string;
+  public currentBase: string;
+  private currencyIndex: number;
+  public moneyCurrencyIndex: number;
+  public translatedMoneyCurrencyName: any;
+  public currentCountry: any;
+  public countryIndex: number;
+  public translatedCountryName: string;
 
 
-  constructor(private platform: Platform,public navCtrl: NavController, private loadingCtrl: LoadingController,private router: Router, private alertCtrl:AlertController , private category: Category_operationsService, private modalCtrl: ModalController, private db: DbServiceService, private route: ActivatedRoute) {
+  constructor(private platform: Platform,public navCtrl: NavController, private loadingCtrl: LoadingController,private router: Router, private alertCtrl:AlertController , private categoryService: Category_operationsService, private modalCtrl: ModalController, private db: DbServiceService, private route: ActivatedRoute) {
+    this.id = parseInt(this.route.snapshot.params['id']);
+
   }
 
-  async ngOnInit() {
-    this.getItem().then(_ => {
-      this.newBase =  this.category.currencyCode
-      this.pickedCurrency= this.category.currencyCode
-      this.goldPrice = +this.allRates.rates.gold * +this.allRates.rates.rates[this.newBase]
-      this.silverPrice = +this.allRates.rates.silver * +this.allRates.rates.rates[this.newBase]
-      if(this.newBase) {
-        switch (this.newBase) {
-          case 'TRY' :
-            this.translatedCurrencyName = "ليرة تركية";
-            break;
-          case 'USD' :
-            this.translatedCurrencyName = "دولار";
-            break;
-          case "EUR" :
-            this.translatedCurrencyName = "يورو";
-            break;
-          case "KWD" :
-            this.translatedCurrencyName = "دينار كويتي";
-            break;
-          default:
-            return;
-        }
-      }
+  ngOnInit() {
+    this.currentBase =  this.categoryService.currencyCode
+    this.currentCountry = this.categoryService.countryCode;
+    this.pickedCurrency= this.currentBase
+
+    this.moneyCurrencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.pickedCurrency);
+    console.log(this.moneyCurrencyIndex);
+    this.translatedMoneyCurrencyName = this.categoryService.curreciesList[this.moneyCurrencyIndex].name;
+    console.log(this.translatedMoneyCurrencyName);
+
+
+    this.getGlobalRatesObject().then(_ => {
+      this.goldPrice = this.allRates.rates.gold * this.allRates.rates.rates[this.currentBase]
+      this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.currentBase]
+
+      this.countryIndex = this.categoryService.countriesList.findIndex(C => C.country_code == this.currentCountry);
+      console.log(this.countryIndex);
+      this.translatedCountryName = this.categoryService.countriesList[this.countryIndex].country_name;
+      console.log(this.translatedCountryName);
     });
-    this.sub = this.route
-        .queryParams
-        .subscribe(params => {
-          this.id = +params['id'];
-        });
-    const loading = await this.loadingCtrl.create({
-      cssClass: 'my-custom-class',
-      message: 'يرجى الانتظار',
-      mode:'ios',
-      spinner:'circular',
-    })
-    await loading.present();
-    if (this.id == 7) {
-      this.category.getAllCountries().pipe(take(1)).subscribe(data => {
-            this.availableCountries = data
 
-            for(let i = 0; i < this.availableCountries.length; i++) {
-              if (this.availableCountries[i].country_name === this.defaultCountry){
-                this.fitir_value = this.availableCountries[i].fitir_value;
-              }
-            }
-          }
-      )
-    }
 
-    this.category.getAllCurrencies().subscribe(data => {
-      this.availableCurrencies = data
-    })
 
-    this.categorySub = this.category.getAllCategory().subscribe(result => {
+    this.categorySub = this.categoryService.getAllCategory().subscribe(result => {
       this.catEl = result[this.id -1]
     })
 
-    this.getItem().then(async () => {
-        await loading.dismiss()
-      // })
-    })
+    this.getGlobalRatesObject()
   }
-  async getItem() {
+  async getGlobalRatesObject() {
     const ret = await Storage.get({key: 'GLOBAL-RATES'});
     this.allRates = JSON.parse(ret.value);
   }
-
-  ngOnDestroy() {
-    this.categorySub.unsubscribe();
-  }
-
 
   async onAddOperation(form :NgForm){
     console.log(form.value)
@@ -131,42 +97,43 @@ export class AddNewValuePage implements OnInit, OnDestroy{
   let insertedValueForBase:string ;
 
     if (this.id == 1){
-      message = `<ion-label>${((form.value.d_val_1 + (form.value.d_val_2)*(21/24) + (form.value.d_val_3)*(18/24)) * this.goldPrice * 0.025).toFixed(0)}  ${this.translatedCurrencyName}</ion-label>`;
+      message = `<ion-label>${((form.value.d_val_1 + (form.value.d_val_2)*(21/24) + (form.value.d_val_3)*(18/24)) * this.goldPrice * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
       insertedValue = (form.value.d_val_1 + (form.value.d_val_2)*(21/24) + (form.value.d_val_3)*(18/24)) + 'جرام 24 قيراط'
-      value = ((form.value.d_val_1 + (form.value.d_val_2)*(21/24) + (form.value.d_val_3)*(18/24)) * this.goldPrice * 0.025).toFixed(0);
+      value = ((form.value.d_val_1 + (form.value.d_val_2)*(21/24) + (form.value.d_val_3)*(18/24)) * this.goldPrice * 0.025).toFixed(2);
     }
     else if (this.id == 2) {
-      if (this.pickedCurrency !== this.newBase) {
+      if (this.pickedCurrency !== this.currentBase) {
         insertedValue =  form.value.d_val_1;
-        insertedValueForBase = (form.value.d_val_1 * 1 / this.allRates.rates.rates[form.value.currency_type] * this.allRates.rates.rates[this.newBase]).toFixed(0)
-        message = `<ion-label>${(+insertedValueForBase * 0.025).toFixed(0)}  ${this.translatedCurrencyName}</ion-label>`;
-        value = (+insertedValueForBase * 0.025).toFixed(0)
+        insertedValueForBase = (form.value.d_val_1 * 1 / this.allRates.rates.rates[form.value.currency_type] * this.allRates.rates.rates[this.currentBase]).toFixed(2)
+        message = `<ion-label>${(+insertedValueForBase * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
+        value = (+insertedValueForBase * 0.025).toFixed(2)
       }
      else {
         insertedValue =  form.value.d_val_1;
-        message = `<ion-label>${(+insertedValue * 0.025).toFixed(0)}  ${this.translatedCurrencyName}</ion-label>`;
-        value = (+insertedValue * 0.025).toFixed(0)
+        message = `<ion-label>${(+insertedValue * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
+        value = (+insertedValue * 0.025).toFixed(2)
       }
     }else if (this.id == 3) {
-      message = `<ion-label>${(form.value.d_val_1 * 0.025).toFixed(0)}  ${this.translatedCurrencyName}</ion-label>`;
-      insertedValue = form.value.d_val_1.toFixed(0)
-      value = (form.value.d_val_1 * 0.025).toFixed(0);
+      message = `<ion-label>${(form.value.d_val_1 * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
+      insertedValue = form.value.d_val_1.toFixed(2)
+      value = (form.value.d_val_1 * 0.025).toFixed(2);
     }
     else if (this.id == 4) {
-      message = `<ion-label>${(form.value.d_val_1 * this.silverPrice * 0.025).toFixed(0)}  ${this.translatedCurrencyName}</ion-label>`;
-      insertedValue = (form.value.d_val_1).toFixed(0) + 'جرام'
-      value = (form.value.d_val_1 * this.silverPrice * 0.025).toFixed(0)
+      message = `<ion-label>${(form.value.d_val_1 * this.silverPrice * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
+      insertedValue = (form.value.d_val_1).toFixed(2) + 'جرام'
+      value = (form.value.d_val_1 * this.silverPrice * 0.025).toFixed(2)
     }
     else if (this.id == 5 || this.id == 6) {
-      message = `<ion-label>${(form.value.d_val_1 * form.value.d_val_2 * 0.025).toFixed(0)}  ${this.translatedCurrencyName}</ion-label>`;
-      insertedValue = (form.value.d_val_1 * form.value.d_val_2).toFixed(0)
-      value = (form.value.d_val_1 * form.value.d_val_2 * 0.025).toFixed(0)
+      message = `<ion-label>${(form.value.d_val_1 * form.value.d_val_2 * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
+      insertedValue = (form.value.d_val_1 * form.value.d_val_2).toFixed(2)
+      value = (form.value.d_val_1 * form.value.d_val_2 * 0.025).toFixed(2)
     }
+
     let data:any = [form.value.category_id, form.value.category_name, form.value.country_id, form.value.currency_type, form.value.d_val_1, form.value.d_val_2, form.value.d_val_3, form.value.name, form.value.user_id];
     const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class-alert',
       header: 'احتساب',
-      subHeader:` مقدار الزكاة ل${insertedValue} ${(this.id == 1 || this.id == 4 )? '' : (this.id == 2 ? this.pickedCurrency: this.translatedCurrencyName)}`,
+      subHeader:` مقدار الزكاة ل${insertedValue} ${(this.id == 1 || this.id == 4 )? '' : (this.id == 2 ? this.pickedCurrency: this.translatedMoneyCurrencyName)}`,
       message: message,
       mode:'ios',
       buttons: [{
@@ -183,7 +150,7 @@ export class AddNewValuePage implements OnInit, OnDestroy{
               cssClass: 'my-custom-class',
               componentProps:{
                 'willPayValue':parseInt(value),
-                'currency': this.translatedCurrencyName
+                'currency': this.translatedMoneyCurrencyName
               }
             });
             return await charityModal.present();
@@ -219,7 +186,7 @@ export class AddNewValuePage implements OnInit, OnDestroy{
         })
       }else{
         console.log(form.value)
-        return this.category.createNewOperation(form.value).subscribe(resData=>{
+        return this.categoryService.createNewOperation(form.value).subscribe(resData=>{
           console.log(resData)
           this.router.navigate(['home', resData], {replaceUrl: true});
         })
@@ -229,11 +196,31 @@ export class AddNewValuePage implements OnInit, OnDestroy{
 
   onSelect(option: string) {
       this.pickedCurrency=option
-      this.goldPrice = +this.allRates.rates.gold * +this.allRates.rates.rates[this.pickedCurrency]
+    console.log(this.pickedCurrency)
+    this.moneyCurrencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.pickedCurrency);
+    console.log(this.currencyIndex);
+    this.translatedMoneyCurrencyName = this.categoryService.curreciesList[this.moneyCurrencyIndex].name;
+    console.log(this.translatedMoneyCurrencyName);
+      this.goldPrice = this.allRates.rates.gold * this.allRates.rates.rates[this.pickedCurrency]
+    console.log(this.goldPrice)
   }
 
-  onCurChange(cur: string){
-   this.pickedCurrency = cur
+  async openCharityModal(value) {
+    const charityModal = await this.modalCtrl.create({
+      component: CharityComponent,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        'willPayValue': parseInt(value),
+        'currency': this.translatedMoneyCurrencyName
+      }
+    });
+    return await charityModal.present();
+  }
+
+
+  getFitirValue (country: string) {
+    let name = this.categoryService.countriesList.filter(C => C.country_code == country)
+    return name[0].fitir_value;
   }
 
 }

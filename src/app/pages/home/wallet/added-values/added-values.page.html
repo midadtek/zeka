@@ -51,11 +51,11 @@
           </ion-card-header>
           <ion-card-content style="display: flex; justify-content: space-around" class="ion-text-center">
             <ion-item>
-              <ion-card-subtitle>{{!operation?.d_val_1 ? 0 : operation?.d_val_1}} {{operation?.currency_type == newBase ? translatedCurrencyName : operation?.currency_type}}</ion-card-subtitle>
+              <ion-card-subtitle>{{!operation?.d_val_1 ? 0 : operation?.d_val_1}}{{getMoneyCurrencyName(operation?.currency_type)}}</ion-card-subtitle>
             </ion-item>
           </ion-card-content>
           <ion-item color="warning" class="ion-text-center">
-            <ion-label>مقدار الزكاة {{(operation?.d_val_1 * 0.025).toFixed(0)}} {{ operation?.currency_type == newBase ? translatedCurrencyName : operation?.currency_type}}</ion-label>
+            <ion-label>مقدار الزكاة {{(operation?.d_val_1 * 0.025).toFixed(0)}} {{getMoneyCurrencyName(operation?.currency_type)}}</ion-label>
             <ion-icon name="trash" (click)="presentAlertConfirm(operation?.id)" size="large" color="primary"></ion-icon>
           </ion-item>
         </ion-card>

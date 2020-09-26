@@ -12,42 +12,47 @@ const { Storage } = Plugins;
   styleUrls: ['./setting.page.scss'],
 })
 export class SettingPage implements OnInit {
-  formatedDate: string;
-  allCountries: any[] = [];
-  countrySub: Subscription;
-  currencySub: Subscription;
-  public currencies: any[];
+  public formattedDate: Date;
+  public currencies: any[] = this.categoryService.curreciesList
+  public Countries: any[] = this.categoryService.countriesList
   public currencyCode: string;
   public countryCode: string;
   public selectedDate: string;
   public translatedCurrencyName: string;
   public translatedCountryName: string;
+  private currencyIndex: number;
 
-  constructor(private router:Router, private category: Category_operationsService) { }
+  constructor(private router:Router, private categoryService: Category_operationsService) { }
 
-  ngOnInit() {
-    this.category.getObject()
-    this.currencyCode =  this.category.currencyCode
-    if(this.currencyCode) {
-      switch (this.currencyCode) {
-        case 'TRY' :
-          this.translatedCurrencyName = "ليرة تركية";
-          break;
-        case 'USD' :
-          this.translatedCurrencyName = "دولار";
-          break;
-        case "EUR" :
-          this.translatedCurrencyName = "يورو";
-          break;
-        case "KWD" :
-          this.translatedCurrencyName = "دينار كويتي";
-          break;
-        default:
-          return;
-      }
-    }
-    this.countryCode = this.category.countryCode;
-    if(this.countryCode) {
+  async ngOnInit() {
+    await this.categoryService.getSettingObject()
+    this.currencyCode = this.categoryService.currencyCode
+    this.currencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.currencyCode);
+    console.log(this.currencyIndex)
+    this.translatedCurrencyName = this.categoryService.curreciesList[this.currencyIndex].name;
+    console.log(this.translatedCurrencyName);
+
+
+    // if (this.currencyCode) {
+    //   switch (this.currencyCode) {
+    //     case 'TRY' :
+    //       this.translatedCurrencyName = "ليرة تركية";
+    //       break;
+    //     case 'USD' :
+    //       this.translatedCurrencyName = "دولار";
+    //       break;
+    //     case "EUR" :
+    //       this.translatedCurrencyName = "يورو";
+    //       break;
+    //     case "KWD" :
+    //       this.translatedCurrencyName = "دينار كويتي";
+    //       break;
+    //     default:
+    //       return;
+    //   }
+    // }
+    this.countryCode = this.categoryService.countryCode;
+    if (this.countryCode) {
       switch (this.countryCode) {
         case 'TR' :
           this.translatedCountryName = "تركيا";
@@ -65,17 +70,17 @@ export class SettingPage implements OnInit {
           return;
       }
     }
-    this.formatedDate = this.category.selectedDate
-    this.currencySub = this.category.getAllCurrencies().pipe(take(1)).subscribe(data => {
-      this.currencies = data;
-    })
-    this.countrySub = this.category.getAllCountries().pipe(take(1)).subscribe(data => {
-      this.allCountries =  data;
-    })
+    this.formattedDate = this.categoryService.selectedDate
+    // this.currencySub = this.categoryService.getAllCurrencies().pipe(take(1)).subscribe(data => {
+    //   this.currencies = data;
+    // })
+    // this.countrySub = this.categoryService.getAllCountries().pipe(take(1)).subscribe(data => {
+    //   this.allCountries = data;
+    // })
 
   }
 
-  async setObject() {
+  async setSettingObject() {
     await Storage.set({
       key: 'setting',
       value: JSON.stringify({
@@ -92,29 +97,11 @@ export class SettingPage implements OnInit {
   pickedDate(date: string) {
     this.selectedDate = date;
   }
-  formatDate(date: any) {
-    let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2)
-      month = '0' + month;
-    if (day.length < 2)
-      day = '0' + day;
-
-    return [year, month, day].join('-');
-  }
   setCurrencyItem(currencycode: string) {
     this.currencyCode = currencycode
   }
   setCountryItem(countrycode: string) {
     this.countryCode = countrycode
-  }
-
-  ionViewDidLeave(){
-    this.currencySub.unsubscribe();
-    this.countrySub.unsubscribe();
   }
 
 }

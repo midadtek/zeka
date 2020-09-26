@@ -82,7 +82,7 @@
     <ion-label>مقدار الزكاة للقيم المدخلة {{((goldTotalPrice+moneyTotalPrice+tradeTotalPrice+silverTotalPrice+stockTotalPrice+mutualTotalPrice) * 0.025 ).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
   </ion-item>
   <ion-item>
-    <ion-label>نصاب الزكاة هو : {{(goldPrice * 85).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+    <ion-label>نصاب الزكاة هو : {{(+goldPrice * 85).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
   </ion-item>
 </ion-list>
 <!--  page content-->
@@ -96,7 +96,7 @@
       <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==1'> {{ (+lasOpe?.d_val_1 + +lasOpe?.d_val_2 * 0.875 + +lasOpe?.d_val_3 * 0.75).toFixed(0)}} جرام 24 قيراط</ion-label>
       <ion-label style="font-size: 15px;  "  *ngIf='lasOpe?.category_id==4'>  {{ lasOpe?.d_val_1.toFixed(0)}} جرام</ion-label>
       <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==5 || lasOpe?.category_id==6'>  {{ (lasOpe?.d_val_1 * lasOpe?.d_val_2).toFixed(0)}} {{ translatedCurrencyName}}</ion-label>
-      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==2'> {{ lasOpe?.d_val_1}} {{lasOpe?.currency_type == newBase ? translatedCurrencyName : (lasOpe?.currency_type == 'USD' ? 'دولار' : (lasOpe?.currency_type == 'EUR' ?'يورو': lasOpe?.currency_type) )}}</ion-label>
+      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==2'> {{ lasOpe?.d_val_1}} {{getMoneyCurrencyName(lasOpe?.currency_type)}}</ion-label>
       <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==3'> {{ (lasOpe?.d_val_1).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
       </ion-label>
     </ion-item>

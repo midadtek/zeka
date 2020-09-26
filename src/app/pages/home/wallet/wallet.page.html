@@ -48,7 +48,7 @@
         <img src="assets/images/2.png">
       </ion-thumbnail>
       <ion-label class="ion-text-wrap" *ngIf='moneyOperations' >{{moneyOperations[0].category_name}}</ion-label>
-      <ion-label class="ion-text-wrap">مجموع القيم :  {{totalTransformedMoney.toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+      <ion-label class="ion-text-wrap">مجموع القيم :  {{totalTransformedMoney.toFixed(2)}} {{translatedCurrencyName}}</ion-label>
     </ion-item>
     </ion-item-sliding>
 
@@ -63,7 +63,7 @@
         <img src="assets/images/3.png">
       </ion-thumbnail>
       <ion-label class="ion-text-wrap" *ngIf='tradeOperations'>{{tradeOperations[0].category_name}}</ion-label>
-      <ion-label class="ion-text-wrap">مجموع القيم:  {{tradeOperations_total.toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+      <ion-label class="ion-text-wrap">مجموع القيم:  {{tradeOperations_total.toFixed(2)}} {{translatedCurrencyName}}</ion-label>
     </ion-item>
     </ion-item-sliding>
 
@@ -93,7 +93,7 @@
         <img src="assets/images/5.png">
       </ion-thumbnail>
       <ion-label class="ion-text-wrap" *ngIf='stocksOperations'>{{stocksOperations[0].category_name}}</ion-label>
-      <ion-label class="ion-text-wrap">مجموع القيم:  {{stocksOperations_total.toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+      <ion-label class="ion-text-wrap">مجموع القيم:  {{stocksOperations_total.toFixed(2)}} {{translatedCurrencyName}}</ion-label>
     </ion-item>
     </ion-item-sliding>
 
@@ -108,7 +108,7 @@
         <img src="assets/images/6.png">
       </ion-thumbnail>
       <ion-label class="ion-text-wrap" *ngIf='Mutual_fundsOperations'>{{Mutual_fundsOperations[0].category_name}}</ion-label>
-      <ion-label class="ion-text-wrap">مجموع القيم:  {{Mutual_fundsOperations_total.toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+      <ion-label class="ion-text-wrap">مجموع القيم:  {{Mutual_fundsOperations_total.toFixed(2)}} {{translatedCurrencyName}}</ion-label>
     </ion-item>
     </ion-item-sliding>
   </ion-list>
@@ -121,7 +121,7 @@
             (click)= "onOpenCharityModal()"
             [disabled]="((gold_total * goldPrice * 0.025) + (totalTransformedMoney * 0.025) + (tradeOperations_total * 0.025) + (silverOperations_total * silverPrice * 0.025) + (stocksOperations_total * 0.025) + (Mutual_fundsOperations_total * 0.025) ) < goldPrice * 85 * 0.025">
       التوجه الى طرق الدفع
-      {{!((gold_total * goldPrice * 0.025) + (totalTransformedMoney * 0.025) + (tradeOperations_total * 0.025) + (silverOperations_total * silverPrice * 0.025) + (stocksOperations_total * 0.025) + (Mutual_fundsOperations_total * 0.025)) ? ' 0 ' : ((gold_total * goldPrice * 0.025) + (totalTransformedMoney * 0.025) + (tradeOperations_total * 0.025) + (silverOperations_total * silverPrice * 0.025) + (stocksOperations_total * 0.025) + (Mutual_fundsOperations_total * 0.025)).toFixed(0)}}  {{translatedCurrencyName}}
+      {{!((gold_total * goldPrice * 0.025) + (totalTransformedMoney * 0.025) + (tradeOperations_total * 0.025) + (silverOperations_total * silverPrice * 0.025) + (stocksOperations_total * 0.025) + (Mutual_fundsOperations_total * 0.025)) ? ' 0 ' : ((gold_total * goldPrice * 0.025) + (totalTransformedMoney * 0.025) + (tradeOperations_total * 0.025) + (silverOperations_total * silverPrice * 0.025) + (stocksOperations_total * 0.025) + (Mutual_fundsOperations_total * 0.025)).toFixed(2)}}  {{translatedCurrencyName}}
     </ion-button>
   </ion-footer>
 </ng-template>

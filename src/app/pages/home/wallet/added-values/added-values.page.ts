@@ -23,16 +23,17 @@ export class AddedValuesPage implements OnInit {
  allCategorySub: Subscription;
 CategoryOperationSub: Subscription;
     public allRates: any;
-    public newBase: any;
+    public currentBase: any;
     public goldPrice: number;
     public silverPrice: number;
     public translatedCurrencyName: string;
+    private currencyIndex: number;
   
 
  
- constructor(private platform: Platform, private alertController: AlertController, private db: DbServiceService,private router:Router,  private route: ActivatedRoute, private category: Category_operationsService) {
+ constructor(private platform: Platform, private alertController: AlertController, private db: DbServiceService,private router:Router,  private route: ActivatedRoute, private categoryService: Category_operationsService) {
      this.id = parseInt(this.route.snapshot.params['id']);
-     this.allCategorySub = this.category.getAllCategory().subscribe(result => {
+     this.allCategorySub = this.categoryService.getAllCategory().subscribe(result => {
          this.catEl = result[this.id - 1];
      })
  }
@@ -62,26 +63,11 @@ CategoryOperationSub: Subscription;
      }
 
   ngOnInit() {
-     console.log(this.platform)
-      this.getItem().then(_=>{
-          if(this.newBase) {
-              switch (this.newBase) {
-                  case 'TRY' :
-                      this.translatedCurrencyName = "ليرة تركية";
-                      break;
-                  case 'USD' :
-                      this.translatedCurrencyName = "دولار";
-                      break;
-                  case "EUR" :
-                      this.translatedCurrencyName = "يورو";
-                      break;
-                  case "KWD" :
-                      this.translatedCurrencyName = "دينار كويتي";
-                      break;
-                  default:
-                      return;
-              }
-          }
+      this.getGlobalRatesObject().then(_=>{
+          this.currencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.currentBase);
+          console.log(this.currencyIndex);
+          this.translatedCurrencyName = this.categoryService.curreciesList[this.currencyIndex].name;
+          console.log(this.translatedCurrencyName);
 
           if(this.platform.is("cordova") || this.platform.is("capacitor")){
   this.db.getoperations().subscribe(data => {
@@ -92,7 +78,7 @@ CategoryOperationSub: Subscription;
   }
 })
           }else{
-              this.category.getAllOperations().subscribe(data=> {
+              this.categoryService.getAllOperations().subscribe(data=> {
                   for(let i = 0; i < data.length; i++) {
                       if(data[i].category_id == this.id){
                           this.cat_ops.push(data[i])
@@ -113,7 +99,7 @@ CategoryOperationSub: Subscription;
       });
     });
       }else{
-          return this.category.deleteOperationById(id).subscribe(_=>{
+          return this.categoryService.deleteOperationById(id).subscribe(_=>{
               this.cat_ops = this.cat_ops.filter(ops => ops.id !== id);
               if(this.cat_ops.length == 0) {
                   this.router.navigateByUrl('/home/wallet');
@@ -122,14 +108,19 @@ CategoryOperationSub: Subscription;
       }
   }
 
-    async getItem() {
+    async getGlobalRatesObject() {
         const ret = await Storage.get({key: 'GLOBAL-RATES'});
         this.allRates = JSON.parse(ret.value);
-        this.newBase =  this.category.currencyCode
-        this.goldPrice = +this.allRates.rates.gold * +this.allRates.rates.rates[this.newBase]
-        this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.newBase]
+        this.currentBase =  this.categoryService.currencyCode
+        this.goldPrice = +this.allRates.rates.gold * +this.allRates.rates.rates[this.currentBase]
+        this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.currentBase]
     }
   ionViewDidEnter() {
     this.allCategorySub.unsubscribe();
   }
+
+    getMoneyCurrencyName (currency: string) {
+        let name = this.categoryService.curreciesList.filter(I => I.code == currency)
+        return name[0].name;
+    }
 }

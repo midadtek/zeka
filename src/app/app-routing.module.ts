@@ -25,7 +25,7 @@ const routes: Routes = [
       loadChildren: () => import('./pages/home/zekat-category/zekat-category.module').then(m => m.ZekatCategoryPageModule)
         },
           {
-            path: 'add-new-value',
+            path: ':id',
             loadChildren: () => import('./pages/home/zekat-category/add-new-value/add-new-value.module').then(m => m.AddNewValuePageModule)
           }]
     },

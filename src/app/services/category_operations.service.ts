@@ -36,9 +36,12 @@ export interface charityBankInfo {
 })
 export class Category_operationsService {
   public charities: charity[];
-  public selectedDate: string;
+  public selectedDate: Date;
   public currencyCode: any;
   public countryCode: any;
+  public curreciesList: any[];
+  public countriesList: any[];
+  public GlobalRates: any;
 
   constructor(private http: HttpClient) {
 
@@ -48,53 +51,58 @@ export class Category_operationsService {
   
   
   getAllCategory(){
-  return this.http.get<any>('http://zakati.samhayir.com/api/v1/category/all')
+  return this.http.get<any>('http://zakatiadmin.samhayir.com/api/v1/category/all')
 }
   getAllOperations() {
-    return this.http.get<any>('http://zakati.samhayir.com/api/v1/operation/allOperationOrderedLimited');
+    return this.http.get<any>('http://zakatiadmin.samhayir.com/api/v1/operation/allOperationOrderedLimited');
   }
   getAllCharities() {
-    this.http.get<charity[]>('http://zakati.samhayir.com/api/v1/charity/all').subscribe(resData => {
+    this.http.get<charity[]>('http://zakatiadmin.samhayir.com/api/v1/charity/all').subscribe(resData => {
       this.charities = resData;
     });
   }
   getAllCharitiesBankInfo(id) {
-    return this.http.get<charityBankInfo[]>(`http://zakati.samhayir.com/api/v1/charity/bankInfo/${id}`);
+    return this.http.get<charityBankInfo[]>(`http://zakatiadmin.samhayir.com/api/v1/charity/bankInfo/${id}`);
   }
   createNewOperation(data: any) {
-    return this.http.post<any>('http://zakati.samhayir.com/api/v1/operation/create',data );
+    return this.http.post<any>('http://zakatiadmin.samhayir.com/api/v1/operation/create',data );
   }
 
   getAllOperationByCategoryLimited(catId: string, limit: string) {
-    return this.http.get<any>('http://zakati.samhayir.com/api/v1/operation/allOperationByCategory/'+catId+'/'+limit)
+    return this.http.get<any>('http://zakatiadmin.samhayir.com/api/v1/operation/allOperationByCategory/'+catId+'/'+limit)
   }
 
   getAllOperationByCategory(catId){
-    return this.http.get<any>('http://zakati.samhayir.com/api/v1/operation/allOperationByCategory/'+catId);
+    return this.http.get<any>('http://zakatiadmin.samhayir.com/api/v1/operation/allOperationByCategory/'+catId);
   }
 
   getAllOperationsOrderedLimited() {
-    return this.http.get<any>('http://zakati.samhayir.com/api/v1/operation/allOperationOrderedLimited');
+    return this.http.get<any>('http://zakatiadmin.samhayir.com/api/v1/operation/allOperationOrderedLimited');
   }
   
   getAllCurrencies() {
-    return this.http.get<any[]>('http://zakati.samhayir.com/api/v1/currency/all');
+    return this.http.get<any[]>('http://zakatiadmin.samhayir.com/api/v1/currency/all').subscribe(responseData => {
+      this.curreciesList = responseData
+    })
   }
   getAllCountries() {
-    return this.http.get<any[]>('http://zakati.samhayir.com/api/v1/country/all');
+    return this.http.get<any[]>('http://zakatiadmin.samhayir.com/api/v1/country/all').subscribe(responseData => {
+      this.countriesList = responseData
+    })
   }
 
   deleteOperationById(id: number) {
-    return this.http.delete<any>('http://zakati.samhayir.com/api/v1/operation/delete/'+id);
+    return this.http.delete<any>('http://zakatiadmin.samhayir.com/api/v1/operation/delete/'+id);
   }
   
   deleteOperationByCategoryId(id: number) {
-    return this.http.delete<any>('http://zakati.samhayir.com/api/v1/operation/deleteByCategory/'+id);
+    return this.http.delete<any>('http://zakatiadmin.samhayir.com/api/v1/operation/deleteByCategory/'+id);
   }
 
 getGlobalRates () {
- return this.http.get<any>('http://zakati.samhayir.com/api/v1/allPrices/price/TRY')
+ return this.http.get<any>('http://zakatiadmin.samhayir.com/api/v1/allPrices/price')
      .subscribe(async resData => {
+       this.GlobalRates = resData
        console.log(resData)
        await Storage.set({
          key: 'GLOBAL-RATES',
@@ -104,33 +112,23 @@ getGlobalRates () {
          })
        }).then(_=>{
        });
-     })
-  }
+     });
+  };
 
-  async getObject() {
+  async getSettingObject() {
     const ret = await Storage.get({ key: 'setting' });
     const setting = JSON.parse(ret.value);
     if (setting){
-      this.selectedDate = this.formatDate(setting.date);
+      this.selectedDate = new Date(setting.date);
       this.currencyCode = setting.currency;
       this.countryCode = setting.country;
     }
   }
-  formatDate(date: any) {
-    let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2)
-      month = '0' + month;
-    if (day.length < 2)
-      day = '0' + day;
-
-    return [year, month, day].join('-');
   }
 
 
-}
 
-
+// async getItem() {
+//   const ret = await Storage.get({key: 'GLOBAL-RATES'});
+//   this.allRates = JSON.parse(ret.value);
+// }

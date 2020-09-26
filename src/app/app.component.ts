@@ -17,26 +17,27 @@ import {Category_operationsService} from "./services/category_operations.service
 })
 export class AppComponent {
 
-  currency: any;
-  public currMap = new Map<string, string>()
-
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private db: DbServiceService,
     private screenOrientation: ScreenOrientation,
-    private  cat: Category_operationsService
+    private  categoryService: Category_operationsService
 
 
 ) {
+    this.categoryService.getGlobalRates();
+    this.categoryService.getAllCurrencies();
+    this.categoryService.getAllCountries();
     this.initializeApp();
-    this.cat.getGlobalRates()
+
   }
 
   initializeApp() {
     this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT).then(_=>{
       console.log(this.screenOrientation.type);
+
     } );
     
     this.platform.ready().then(() => {
@@ -47,5 +48,5 @@ export class AppComponent {
       }
     });
   }
-  
+
 }
