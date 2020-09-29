@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Category_operationsService} from '../../../services/category_operations.service';
 import {AlertController, LoadingController, ModalController} from '@ionic/angular';
 import { Subscription} from 'rxjs';
@@ -52,7 +52,7 @@ getOperationSubs:Subscription;
     public defaultDate: any;
     public currentBase: string;
     public allRates: any;
-    private translatedCurrencyName: string;
+    public translatedCurrencyName: string;
     private lasOps: operation[];
     private currencyIndex: number;
   constructor(private platform: Platform,private db: DbServiceService, private categoryService: Category_operationsService, public alertController: AlertController, private loadingCtrl: LoadingController, private modalCtrl: ModalController) {}
@@ -111,37 +111,35 @@ ionViewWillEnter() {
           this.getOperationSubs = this.categoryService.getAllOperations().subscribe(async data => {
               this.lasOps = data;
               this.isEmpty = data.length === 0;
+
           })
       }
-       this.goldOperations = [];
-       this.gold_total = 0
 
-       this.moneyOperations = [];
-       this.totalTransformedMoney = 0;
-
-       this.tradeOperations = [];
-       this.tradeOperations_total = 0;
-
-       this.silverOperations = [];
-       this.silverOperations_total = 0;
-
-       this.stocksOperations = [];
-       this.stocksOperations_total = 0
-
-       this.Mutual_fundsOperations = [];
-       this.Mutual_fundsOperations_total = 0;
-
-       this.fitirOperations = [];
-       this.fitirOperations_total = 0;
       })
   }
 
   ionViewDidEnter() {
       console.log(this.lasOps)
-      if(!this.lasOps){
-          return
-      }
-      else if (this.lasOps){
+      this.goldOperations = [];
+      this.gold_total = 0
+
+      this.moneyOperations = [];
+      this.totalTransformedMoney = 0;
+
+      this.tradeOperations = [];
+      this.tradeOperations_total = 0;
+
+      this.silverOperations = [];
+      this.silverOperations_total = 0;
+
+      this.stocksOperations = [];
+      this.stocksOperations_total = 0
+
+      this.Mutual_fundsOperations = [];
+      this.Mutual_fundsOperations_total = 0;
+
+      this.fitirOperations = [];
+      this.fitirOperations_total = 0;
           for (let i = 0; i < this.lasOps.length; i++) {
               if(this.lasOps[i].category_id == 1) {
                   this.goldOperations.push(this.lasOps[i])
@@ -189,7 +187,7 @@ ionViewWillEnter() {
           for(let i = 0; i < this.Mutual_fundsOperations.length; i ++) {
               this.Mutual_fundsOperations_total += this.Mutual_fundsOperations[i].d_val_1 * this.Mutual_fundsOperations[i].d_val_2;
           }
-      }
+
 
 
       }
@@ -210,40 +208,45 @@ ionViewWillEnter() {
 
     switch (id) {
       case 1:
-        this.goldOperations = [];
+          this.goldOperations = [];
+          this.gold_total = 0
         break;
       case 2:
         this.moneyOperations = [];
         this.totalTransformedMoney = 0;
         break;
       case 3:
-        this.tradeOperations = [];
+          this.tradeOperations = [];
+          this.tradeOperations_total = 0;
         break;
       case 4:
-        this.silverOperations = [];
+          this.silverOperations = [];
+          this.silverOperations_total = 0;
         break;
       case 5:
-        this.stocksOperations = [];
+          this.stocksOperations = [];
+          this.stocksOperations_total = 0
         break;
       case 6:
-        this.Mutual_fundsOperations = [];
+          this.Mutual_fundsOperations = [];
+          this.Mutual_fundsOperations_total = 0;
         break;
       default:
         break;
     }
       if(this.platform.is("cordova") || this.platform.is("capacitor")) {
-    return this.db.deleteOperationByCategoryId(id).then(() => {
-      this.db.loadAllOperations()
+    return this.db.deleteOperationByCategoryId(id).then(async () => {
+      await this.db.loadAllOperations()
     })
       }else {
-        return  this.categoryService.deleteOperationByCategoryId(id).subscribe(_=>{
-            this.getOperationSubs = this.categoryService.getAllOperations().subscribe(async data => {
-                this.lasOps = data;
-                this.isEmpty = data.length === 0;
-                // this.ionViewWillEnter();
-                this.ionViewDidEnter();
-            });
-        })
+         this.categoryService.deleteOperationByCategoryId(id).subscribe(_=>{
+             console.log( this.goldOperations.length==0 && this.moneyOperations.length==0 && this.tradeOperations.length==0  &&
+                 this.silverOperations.length==0 && this.stocksOperations.length==0 && this.Mutual_fundsOperations.length==0)
+            if(this.goldOperations.length==0 && this.moneyOperations.length==0 && this.tradeOperations.length==0  &&
+               this.silverOperations.length==0 && this.stocksOperations.length==0 && this.Mutual_fundsOperations.length==0 ) {
+                this.isEmpty = true;
+            }
+        });
       }
 
   }
