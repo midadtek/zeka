@@ -33,9 +33,7 @@ CategoryOperationSub: Subscription;
  
  constructor(private platform: Platform, private alertController: AlertController, private db: DbServiceService,private router:Router,  private route: ActivatedRoute, private categoryService: Category_operationsService) {
      this.id = parseInt(this.route.snapshot.params['id']);
-     this.allCategorySub = this.categoryService.getAllCategory().subscribe(result => {
-         this.catEl = result[this.id - 1];
-     })
+         this.catEl = this.categoryService.categoryList[this.id - 1];
  }
      async presentAlertConfirm(id: number) {
          const alert = await this.alertController.create({
@@ -115,9 +113,6 @@ CategoryOperationSub: Subscription;
         this.goldPrice = +this.allRates.rates.gold * +this.allRates.rates.rates[this.currentBase]
         this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.currentBase]
     }
-  ionViewDidEnter() {
-    this.allCategorySub.unsubscribe();
-  }
 
     getMoneyCurrencyName (currency: string) {
         let name = this.categoryService.curreciesList.filter(I => I.code == currency)

@@ -60,7 +60,7 @@ export class AddNewValuePage implements OnInit{
     this.currentCountry = this.categoryService.countryCode;
     this.pickedCurrency= this.currentBase
 
-    this.moneyCurrencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.pickedCurrency);
+    this.moneyCurrencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.currentBase);
     console.log(this.moneyCurrencyIndex);
     this.translatedMoneyCurrencyName = this.categoryService.curreciesList[this.moneyCurrencyIndex].name;
     console.log(this.translatedMoneyCurrencyName);
@@ -77,63 +77,61 @@ export class AddNewValuePage implements OnInit{
     });
 
 
-
-    this.categorySub = this.categoryService.getAllCategory().subscribe(result => {
-      this.catEl = result[this.id -1]
-    })
-
+    this.catEl = this.categoryService.categoryList[this.id -1]
     this.getGlobalRatesObject()
   }
+
+
   async getGlobalRatesObject() {
-    const ret = await Storage.get({key: 'GLOBAL-RATES'});
-    this.allRates = JSON.parse(ret.value);
+    const val = await Storage.get({key: 'GLOBAL-RATES'});
+    this.allRates = JSON.parse(val.value);
   }
 
   async onAddOperation(form :NgForm){
     console.log(form.value)
     let message: string;
-    let value: string;
+    let zakat_value: string;
     let insertedValue: string;
   let insertedValueForBase:string ;
 
     if (this.id == 1){
       message = `<ion-label>${((form.value.d_val_1 + (form.value.d_val_2)*(21/24) + (form.value.d_val_3)*(18/24)) * this.goldPrice * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
       insertedValue = (form.value.d_val_1 + (form.value.d_val_2)*(21/24) + (form.value.d_val_3)*(18/24)) + 'جرام 24 قيراط'
-      value = ((form.value.d_val_1 + (form.value.d_val_2)*(21/24) + (form.value.d_val_3)*(18/24)) * this.goldPrice * 0.025).toFixed(2);
+      zakat_value = ((form.value.d_val_1 + (form.value.d_val_2)*(21/24) + (form.value.d_val_3)*(18/24)) * this.goldPrice * 0.025).toFixed(2);
     }
     else if (this.id == 2) {
       if (this.pickedCurrency !== this.currentBase) {
         insertedValue =  form.value.d_val_1;
         insertedValueForBase = (form.value.d_val_1 * 1 / this.allRates.rates.rates[form.value.currency_type] * this.allRates.rates.rates[this.currentBase]).toFixed(2)
         message = `<ion-label>${(+insertedValueForBase * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
-        value = (+insertedValueForBase * 0.025).toFixed(2)
+        zakat_value = (+insertedValueForBase * 0.025).toFixed(2)
       }
      else {
         insertedValue =  form.value.d_val_1;
         message = `<ion-label>${(+insertedValue * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
-        value = (+insertedValue * 0.025).toFixed(2)
+        zakat_value = (+insertedValue * 0.025).toFixed(2)
       }
     }else if (this.id == 3) {
       message = `<ion-label>${(form.value.d_val_1 * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
       insertedValue = form.value.d_val_1.toFixed(2)
-      value = (form.value.d_val_1 * 0.025).toFixed(2);
+      zakat_value = (form.value.d_val_1 * 0.025).toFixed(2);
     }
     else if (this.id == 4) {
       message = `<ion-label>${(form.value.d_val_1 * this.silverPrice * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
       insertedValue = (form.value.d_val_1).toFixed(2) + 'جرام'
-      value = (form.value.d_val_1 * this.silverPrice * 0.025).toFixed(2)
+      zakat_value = (form.value.d_val_1 * this.silverPrice * 0.025).toFixed(2)
     }
     else if (this.id == 5 || this.id == 6) {
       message = `<ion-label>${(form.value.d_val_1 * form.value.d_val_2 * 0.025).toFixed(2)}  ${this.translatedMoneyCurrencyName}</ion-label>`;
       insertedValue = (form.value.d_val_1 * form.value.d_val_2).toFixed(2)
-      value = (form.value.d_val_1 * form.value.d_val_2 * 0.025).toFixed(2)
+      zakat_value = (form.value.d_val_1 * form.value.d_val_2 * 0.025).toFixed(2)
     }
 
     let data:any = [form.value.category_id, form.value.category_name, form.value.country_id, form.value.currency_type, form.value.d_val_1, form.value.d_val_2, form.value.d_val_3, form.value.name, form.value.user_id];
     const alert = await this.alertCtrl.create({
       cssClass: 'my-custom-class-alert',
       header: 'احتساب',
-      subHeader:` مقدار الزكاة ل${insertedValue} ${(this.id == 1 || this.id == 4 )? '' : (this.id == 2 ? this.pickedCurrency: this.translatedMoneyCurrencyName)}`,
+      subHeader:` مقدار الزكاة ل${insertedValue} ${(this.id == 1 || this.id == 4 )? '' : this.getMoneyCurrencyName(this.pickedCurrency)}`,
       message: message,
       mode:'ios',
       buttons: [{
@@ -149,7 +147,7 @@ export class AddNewValuePage implements OnInit{
               component: CharityComponent,
               cssClass: 'my-custom-class',
               componentProps:{
-                'willPayValue':parseInt(value),
+                'willPayValue':parseInt(zakat_value),
                 'currency': this.translatedMoneyCurrencyName
               }
             });
@@ -160,7 +158,7 @@ export class AddNewValuePage implements OnInit{
     });
 
     await alert.present().then(_=>{
-      if(this.id == 1 && (+form.value.d_val_1 + +form.value.d_val_2*0.875 + +form.value.d_val_3*0.75) < 85){
+      if(this.id == 1 && (form.value.d_val_1 + form.value.d_val_2*0.875 + form.value.d_val_3*0.75) < 85){
         document.querySelector('ion-alert div.alert-button-group button:nth-of-type(2)').setAttribute('disabled', 'true');
         document.querySelector('ion-alert div.alert-button-group button:nth-of-type(2)').setAttribute('style', 'opacity:0.3');
       }
@@ -197,12 +195,7 @@ export class AddNewValuePage implements OnInit{
   onSelect(option: string) {
       this.pickedCurrency=option
     console.log(this.pickedCurrency)
-    this.moneyCurrencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.pickedCurrency);
-    console.log(this.currencyIndex);
-    this.translatedMoneyCurrencyName = this.categoryService.curreciesList[this.moneyCurrencyIndex].name;
-    console.log(this.translatedMoneyCurrencyName);
       this.goldPrice = this.allRates.rates.gold * this.allRates.rates.rates[this.pickedCurrency]
-    console.log(this.goldPrice)
   }
 
   async openCharityModal(value) {
@@ -216,11 +209,13 @@ export class AddNewValuePage implements OnInit{
     });
     return await charityModal.present();
   }
-
-
   getFitirValue (country: string) {
     let name = this.categoryService.countriesList.filter(C => C.country_code == country)
     return name[0].fitir_value;
+  }
+  getMoneyCurrencyName (currency: string) {
+    let name = this.categoryService.curreciesList.filter(I => I.code == currency)
+    return name[0].name;
   }
 
 }

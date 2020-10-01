@@ -17,7 +17,7 @@
   <ion-card *ngIf = 'catEl?.id == 2'>
     <ion-card-content>
       نصاب المال هو قيمة 85 جرام عيار 24
-      اي ما يعادل {{(goldPrice * 85).toFixed(0)}} {{translatedMoneyCurrencyName}}
+      اي ما يعادل {{(goldPrice * 85).toFixed(0)}} {{this.getMoneyCurrencyName(this.pickedCurrency)}}
     </ion-card-content>
   </ion-card>
   <ion-card *ngIf = 'catEl?.id == 3'>

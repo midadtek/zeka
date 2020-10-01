@@ -14,14 +14,14 @@
     <ion-label>اختر العملة</ion-label>
     <ion-label></ion-label>
     <ion-select mode="ios" interface="action-sheet" [ngModel]="currencyCode" [placeholder]="translatedCurrencyName"  (ionChange)="setCurrencyItem($event.target.value)">
-      <ion-select-option *ngFor='let currency of currencies' [value] = "currency.code" > {{currency.name}} </ion-select-option>
+      <ion-select-option *ngFor='let currency of currencies' [value] = "currency?.code" > {{currency.name}} </ion-select-option>
     </ion-select>
   </ion-item>
 
   <ion-item>
     <ion-label>اختر البلد</ion-label>
     <ion-select mode="ios" interface="action-sheet" [ngModel]="countryCode" [placeholder]="translatedCountryName" (ionChange)='setCountryItem($event.target.value)'>
-      <ion-select-option  *ngFor='let country of Countries' [value]="country.country_code">{{country.country_name}}</ion-select-option>
+      <ion-select-option  *ngFor='let country of Countries' [value]="country?.country_code">{{country.country_name}}</ion-select-option>
     </ion-select>
   </ion-item>
 

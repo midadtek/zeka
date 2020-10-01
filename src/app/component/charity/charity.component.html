@@ -12,7 +12,7 @@
 
 <ion-content>
 <ion-item class="ion-text-center" color="warning" *ngIf="currency && willPayValue">
-  <ion-label>المبلغ {{willPayValue.toFixed(0)}} {{currency == 'TRY'? 'ليرة تركية' : (currency == 'USD'?'دولار':(currency == 'EUR'? 'يورو':currency))}}</ion-label>
+  <ion-label>المبلغ {{willPayValue.toFixed(0)}} {{currency}}</ion-label>
 </ion-item>
 
   <ion-list>

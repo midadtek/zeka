@@ -54,6 +54,8 @@ singleCharity: charity = {
 }
   ngOnInit() {
     this.charities = this.category.charities;
+    console.log(this.currency);
+    console.log(this.willPayValue);
   }
 
   async copy(row) {

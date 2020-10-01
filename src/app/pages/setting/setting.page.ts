@@ -1,7 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import {take} from 'rxjs/operators';
 import { Category_operationsService } from 'src/app/services/category_operations.service';
-import { Subscription } from 'rxjs';
 import {Router} from "@angular/router";
 import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
@@ -13,8 +11,8 @@ const { Storage } = Plugins;
 })
 export class SettingPage implements OnInit {
   public formattedDate: Date;
-  public currencies: any[] = this.categoryService.curreciesList
-  public Countries: any[] = this.categoryService.countriesList
+  public currencies: any[];
+  public Countries: any[] ;
   public currencyCode: string;
   public countryCode: string;
   public selectedDate: string;
@@ -22,9 +20,10 @@ export class SettingPage implements OnInit {
   public translatedCountryName: string;
   private currencyIndex: number;
 
-  constructor(private router:Router, private categoryService: Category_operationsService) { }
+  constructor(private router:Router, private categoryService: Category_operationsService) {}
 
   async ngOnInit() {
+
     await this.categoryService.getSettingObject()
     this.currencyCode = this.categoryService.currencyCode
     this.currencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.currencyCode);
@@ -32,25 +31,6 @@ export class SettingPage implements OnInit {
     this.translatedCurrencyName = this.categoryService.curreciesList[this.currencyIndex].name;
     console.log(this.translatedCurrencyName);
 
-
-    // if (this.currencyCode) {
-    //   switch (this.currencyCode) {
-    //     case 'TRY' :
-    //       this.translatedCurrencyName = "ليرة تركية";
-    //       break;
-    //     case 'USD' :
-    //       this.translatedCurrencyName = "دولار";
-    //       break;
-    //     case "EUR" :
-    //       this.translatedCurrencyName = "يورو";
-    //       break;
-    //     case "KWD" :
-    //       this.translatedCurrencyName = "دينار كويتي";
-    //       break;
-    //     default:
-    //       return;
-    //   }
-    // }
     this.countryCode = this.categoryService.countryCode;
     if (this.countryCode) {
       switch (this.countryCode) {
@@ -71,13 +51,6 @@ export class SettingPage implements OnInit {
       }
     }
     this.formattedDate = this.categoryService.selectedDate
-    // this.currencySub = this.categoryService.getAllCurrencies().pipe(take(1)).subscribe(data => {
-    //   this.currencies = data;
-    // })
-    // this.countrySub = this.categoryService.getAllCountries().pipe(take(1)).subscribe(data => {
-    //   this.allCountries = data;
-    // })
-
   }
 
   async setSettingObject() {
@@ -104,4 +77,8 @@ export class SettingPage implements OnInit {
     this.countryCode = countrycode
   }
 
+  ionViewDidEnter(){
+    this.currencies =this.categoryService.curreciesList;
+    this.Countries = this.categoryService.countriesList;
+  }
 }

@@ -27,9 +27,7 @@ export class AppComponent {
 
 
 ) {
-    this.categoryService.getGlobalRates();
-    this.categoryService.getAllCurrencies();
-    this.categoryService.getAllCountries();
+
     this.initializeApp();
 
   }
@@ -39,7 +37,11 @@ export class AppComponent {
       console.log(this.screenOrientation.type);
 
     } );
-    
+    this.categoryService.getGlobalRates();
+    this.categoryService.getAllCurrencies();
+    this.categoryService.getAllCountries();
+    this.categoryService.getAllCategory();
+
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();

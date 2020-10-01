@@ -79,9 +79,7 @@ export class HomePage implements OnInit{
                 console.log(data)
                 this.lastOperation = data;
             })
-            // this.sub = this.route.params.subscribe(params => {
-            //     this.id = +params.id
-            // })
+
         }
         this.categoryService.getSettingObject().then(_ => {
             this.currentBase =  this.categoryService.currencyCode
@@ -94,10 +92,6 @@ export class HomePage implements OnInit{
             console.log(this.currencyIndex);
             this.translatedCurrencyName = this.categoryService.curreciesList[this.currencyIndex].name;
             console.log(this.translatedCurrencyName);
-            // this.moneyCurrencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.pickedCurrency);
-            // console.log(this.currencyIndex);
-            // this.translatedMoneyCurrencyName = this.categoryService.curreciesList['TRY'].name;
-            // console.log(this.translatedMoneyCurrencyName);
         })
     }
 ionViewDidEnter () {

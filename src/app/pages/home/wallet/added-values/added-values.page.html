@@ -55,7 +55,7 @@
             </ion-item>
           </ion-card-content>
           <ion-item color="warning" class="ion-text-center">
-            <ion-label>مقدار الزكاة {{(operation?.d_val_1 * 0.025).toFixed(0)}} {{getMoneyCurrencyName(operation?.currency_type)}}</ion-label>
+            <ion-label>مقدار الزكاة {{operation?.currency_type == currentBase ? (operation?.d_val_1 * 0.025).toFixed(0) : (+(this.operation?.d_val_1 * (1/this.allRates.rates.rates[operation?.currency_type]) * this.allRates.rates.rates[this.currentBase].toFixed(0))*0.025).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
             <ion-icon name="trash" (click)="presentAlertConfirm(operation?.id)" size="large" color="primary"></ion-icon>
           </ion-item>
         </ion-card>

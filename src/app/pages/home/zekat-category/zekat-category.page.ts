@@ -8,13 +8,10 @@ import {Router} from "@angular/router";
   styleUrls: ['./zekat-category.page.scss'],
 })
 export class ZekatCategoryPage implements OnInit {
- 
-  constructor(private category: Category_operationsService, private router: Router) { }
-  zekat_category: any[];
+  public zekat_category;
+  constructor(private categoryService: Category_operationsService, private router: Router) { }
   ngOnInit() {
-    this.category.getAllCategory().subscribe(data => {
-      this.zekat_category = data;
-    });
+ this.zekat_category = this.categoryService.categoryList;
 }
   onAddValue(id) {
     this.router.navigate(['/home/zekat-category/add-new-value'], {queryParams: {id: id}});

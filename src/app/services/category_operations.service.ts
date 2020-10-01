@@ -42,6 +42,7 @@ export class Category_operationsService {
   public curreciesList: any[];
   public countriesList: any[];
   public GlobalRates: any;
+  public categoryList: any;
 
   constructor(private http: HttpClient) {
 
@@ -51,7 +52,9 @@ export class Category_operationsService {
   
   
   getAllCategory(){
-  return this.http.get<any>('http://zakatiadmin.samhayir.com/api/v1/category/all')
+  return this.http.get<any>('http://zakatiadmin.samhayir.com/api/v1/category/all').subscribe(responsData=>{
+    this.categoryList = responsData;
+  })
 }
   getAllOperations() {
     return this.http.get<any>('http://zakatiadmin.samhayir.com/api/v1/operation/allOperationOrderedLimited');
@@ -83,11 +86,14 @@ export class Category_operationsService {
   getAllCurrencies() {
     return this.http.get<any[]>('http://zakatiadmin.samhayir.com/api/v1/currency/all').subscribe(responseData => {
       this.curreciesList = responseData
+      console.log(this.curreciesList)
     })
   }
   getAllCountries() {
     return this.http.get<any[]>('http://zakatiadmin.samhayir.com/api/v1/country/all').subscribe(responseData => {
       this.countriesList = responseData
+      console.log(this.countriesList)
+
     })
   }
 
