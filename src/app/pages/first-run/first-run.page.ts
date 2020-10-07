@@ -1,14 +1,19 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { Category_operationsService } from 'src/app/services/category_operations.service';
 import {Router} from '@angular/router';
 import { Plugins } from '@capacitor/core';
+import { IonSlides } from '@ionic/angular';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 const { Storage } = Plugins;
+
 @Component({
-  selector: 'app-setting',
-  templateUrl: './setting.page.html',
-  styleUrls: ['./setting.page.scss'],
+  selector: 'app-first-run',
+  templateUrl: './first-run.page.html',
+  styleUrls: ['./first-run.page.scss'],
 })
-export class SettingPage implements OnInit {
+export class FirstRunPage implements OnInit {
+  @ViewChild('slides', { static: false }) slides: IonSlides;
+  settingForm: FormGroup;
   public formattedDate: Date;
   public currencies: any[];
   public Countries: any[];
@@ -17,8 +22,15 @@ export class SettingPage implements OnInit {
   public selectedDate: string;
   public translatedCurrencyName: string;
   public translatedCountryName: string;
-  constructor(private router: Router, private categoryService: Category_operationsService) { }
+  monthShortNames = 'كانون ثاني, شباط, آذار, نيسان, آيار, حزيران, تموز, آب, أيلول, تشرين أول, تشرين ثاني, كانون أول';
+  constructor(private router: Router, private categoryService: Category_operationsService,
+              private formBuilder: FormBuilder) { }
   async ngOnInit() {
+    this.settingForm = this.formBuilder.group({
+      currencyCode: [null, Validators.compose([Validators.required])],
+      countryCode: [null, Validators.compose([Validators.required])],
+      selectedDate: [null, Validators.compose([Validators.required])],
+    });
     this.categoryService.getCountries().subscribe(responseCountry => {
       this.Countries = responseCountry;
       this.categoryService.getCurrencies().subscribe(responseCurrency => {
@@ -34,6 +46,26 @@ export class SettingPage implements OnInit {
           }
         });
       });
+    });
+  }
+  ionViewWillEnter() {
+    this.slides.lockSwipes(true);
+  }
+  nextSlide() {
+    this.slides.lockSwipes(false);
+    this.slides.slideNext();
+    this.slides.lockSwipes(true);
+  }
+  saveSetting(formValues) {
+    Storage.set({
+      key: 'setting',
+      value: JSON.stringify({
+        currency: formValues.currencyCode,
+        country: formValues.countryCode,
+        date: formValues.selectedDate
+      })
+    }).then(_ => {
+      this.router.navigateByUrl('/home', {replaceUrl: true});
     });
   }
   async setSettingObject() {

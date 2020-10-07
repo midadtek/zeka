@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  is_local: false,
+  base_url: 'http://zakatiadmin.samhayir.com',
 };
 
 /*

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-banner',
   templateUrl: './banner.component.html',
@@ -9,26 +10,29 @@ export class BannerComponent implements OnInit {
   ptime: number;
   timerId;
   counter = 100;
+  index;
+  locenvironment;
   constructor(private modalCtr: ModalController) {}
-  @Input() banners: string[];
-  @Input() index: number;
+  @Input() banners;
+  @Input() id: number;
   ngOnInit() {
+    this.locenvironment = environment;
+    this.index = this.banners.findIndex(x => x.id === this.id);
     clearTimeout(this.timerId);
-    this.index++;
     this.ptime = 1;
     this.StartTimer();
   }
   StartTimer() {
     this.timerId = setTimeout(() => {
       if (this.counter <= 0) {
-        return
+        return;
       }
       this.counter -= 1;
       this.ptime -= 0.01;
       if (this.counter > 0) {
         this.StartTimer();
       } else {
-        if (this.index < this.banners.length) {
+        if (this.index + 1 < this.banners.length) {
           this.counter = 100;
           this.StartTimer();
           this.index++;
@@ -41,7 +45,7 @@ export class BannerComponent implements OnInit {
     }, 100);
   }
   next() {
-    if (this.index < this.banners.length) {
+    if (this.index + 1 < this.banners.length) {
       clearTimeout(this.timerId);
       this.counter = 100;
       this.StartTimer();

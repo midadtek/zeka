@@ -1,76 +1,103 @@
-<ion-header>
+<!-- <ion-header class="ion-no-border">
   <ion-toolbar color="primary" >
-    <ion-menu-button color="light" slot="end"></ion-menu-button>
-    <ion-title class="title ion-text-center" >زكاتي</ion-title>
     <ion-buttons slot="start">
       <ion-button routerLink="/setting"><ion-icon name="settings"></ion-icon></ion-button>
     </ion-buttons>
   </ion-toolbar>
+</ion-header> -->
+<ion-content>
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button routerLink="/setting" size="small" fill="outline">
+      <ion-icon name="settings"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <div class="login-logo">
+    <img src="assets/images/dashboard.png" alt="dashboard">
+  </div>
   <ion-grid>
     <ion-row class="forecast_container ion-nowrap">
-      <ion-col (click)="openBanner(0)">
-        <ion-avatar class="column">
-          <img [src]="images[0]"/>
-        </ion-avatar>
-      </ion-col>
-      <ion-col (click)="openBanner(1)">
-        <ion-avatar class="column">
-          <img [src]="images[1]" />
-        </ion-avatar>
-      </ion-col>
-      <ion-col (click)="openBanner(2)">
-        <ion-avatar class="column">
-          <img [src]="images[2]" />
-        </ion-avatar>
-      </ion-col>
-      <ion-col (click)="openBanner(3)">
-        <ion-avatar class="column">
-          <img [src]="images[3]" />
-        </ion-avatar>
-      </ion-col>
-      <ion-col (click)="openBanner(4)">
-        <ion-avatar class="column">
-          <img [src]="images[4]" />
-        </ion-avatar>
-      </ion-col>
-      <ion-col (click)="openBanner(5)">
-        <ion-avatar class="column">
-          <img [src]="images[5]" />
-        </ion-avatar>
-      </ion-col>
-      <ion-col (click)="openBanner(6)">
-        <ion-avatar class="column">
-          <img [src]="images[6]" />
-        </ion-avatar>
-      </ion-col>
+      <ion-col (click)="openBanner(banner.id)" *ngFor="let banner of banners">
+        <ion-thumbnail class="column">
+          <img [src]="locenviroment.base_url+'/storage/'+banner.img_url"/>
+        </ion-thumbnail>
+      </ion-col>      
     </ion-row>
   </ion-grid>
-</ion-header>
-<ion-content>
-
-<ion-grid>
-  <ion-row>
-    <ion-col size="6">
-      <div   class="contentCol ion-text-center" routerLink="/home/zekat-category">
-      <h3 style="margin-top: 33px;">حاسبة الزكاة</h3>
-      </div>
+<ion-grid  class="ion-no-padding">
+  <ion-row  class="ion-no-padding">
+    <ion-col size="6" class="ion-no-padding">
+      <ion-card mode="ios" [routerLink]="['/home/zekat-category']" routerDirection="forward">
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-no-padding">
+            <ion-col size="12" class="ion-no-padding">
+              <div class="container">
+                  <img src="assets/images/dashboard2.jpg" />  
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item lines="none" color="primary">
+          <ion-label  class="ion-text-wrap ion-text-center">
+            حاسبة الزكاة 
+          </ion-label>
+        </ion-item>
+      </ion-card>
     </ion-col>
-    <ion-col size="6">
-      <div  class="contentCol ion-text-center" routerLink="/home/fatwa">
-      <h3 style="margin-top: 33px;">فتاوى الزكاة</h3>
-      </div>
+    <ion-col size="6" class="ion-no-padding">
+      <ion-card mode="ios" [routerLink]="['/home/fatwa']" routerDirection="forward">
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-no-padding">
+            <ion-col size="12" class="ion-no-padding">
+              <div class="container">
+                  <img src="assets/images/dashboard1.jpg" />  
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item lines="none" color="primary">
+          <ion-label  class="ion-text-wrap ion-text-center">
+            فتاوى الزكاة
+          </ion-label>
+        </ion-item>
+      </ion-card>
     </ion-col>
   </ion-row>
   <ion-row>
-    <ion-col size="6">
-      <div  class="contentCol ion-text-center" routerLink="/home/wallet">
-      <h3 style="margin-top: 33px;">المحفظة</h3>
-      </div>
+    <ion-col size="6" class="ion-no-padding">
+      <ion-card mode="ios" [routerLink]="['/home/wallet']" routerDirection="forward">
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-no-padding">
+            <ion-col size="12" class="ion-no-padding">
+              <div class="container">
+                  <img src="assets/images/dashboard4.jpg" />  
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item lines="none" color="primary">
+          <ion-label  class="ion-text-wrap ion-text-center">
+            المحفظة 
+          </ion-label>
+        </ion-item>
+      </ion-card>
     </ion-col>
-    <ion-col  size="6">
-      <div  class="contentCol ion-text-center" (click) = 'charityModal()'>
-      <h3 style="margin-top: 33px;">الجمعيات</h3>
-      </div>
+    <ion-col size="6" class="ion-no-padding">
+      <ion-card mode="ios" (click) = 'charityModal()'>
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-no-padding">
+            <ion-col size="12" class="ion-no-padding">
+              <div class="container">
+                  <img src="assets/images/dashboard3.jpg" />  
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item lines="none" color="primary">
+          <ion-label  class="ion-text-wrap ion-text-center">
+            الجمعيات 
+          </ion-label>
+        </ion-item>
+      </ion-card>
     </ion-col>
   </ion-row>
 </ion-grid>

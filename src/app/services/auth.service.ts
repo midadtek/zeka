@@ -16,7 +16,7 @@ export class AuthService {
     if (mode) {
       this.http.post<any>( '192.168.1.45:8000/api/v1/user/register', userData).subscribe(result => {
         if (result.status == 'user created successfully') {
-          console.log(result);
+          
           this.router.navigateByUrl('home');
         }
       });
@@ -24,7 +24,7 @@ export class AuthService {
     else {
       this.http.post<any>( '192.168.1.45:8000/api/v1/user/login', userData).subscribe(result => {
         if (result.status == 'logged in successfully') {
-          console.log(result);
+          
           this.router.navigateByUrl('home');
         }
       });

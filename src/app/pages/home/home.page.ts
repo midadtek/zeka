@@ -7,28 +7,21 @@ import { CharityComponent } from 'src/app/component/charity/charity.component';
 import { Plugins } from '@capacitor/core';
 const { Storage } = Plugins;
 import { LoadingController } from '@ionic/angular';
-import {ActivatedRoute} from "@angular/router";
-import {Subscription} from "rxjs";
-import {AuthService} from "../../services/auth.service";
-import {BannerComponent} from "../../component/banner/banner.component";
+import {ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {AuthService} from '../../services/auth.service';
+import {BannerComponent} from '../../component/banner/banner.component';
 import { Platform } from '@ionic/angular';
-
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit{
-    images = [
-        '../assets/images/banner-1.jpg',
-        '../assets/images/banner-2.jpg',
-        '../assets/images/banner-3.jpg',
-        '../assets/images/banner-4.jpg',
-        '../assets/images/banner-5.jpg',
-        '../assets/images/banner-6.jpg',
-        '../assets/images/banner-7.jpg',
-    ];
-  id: number
+  locenviroment;
+  banners;
+  id: number;
   goldPrice: number;
   silverPrice: number;
   goldTotalPrice: number;
@@ -38,69 +31,60 @@ export class HomePage implements OnInit{
   stockTotalPrice: number;
   mutualTotalPrice: number;
   totalAmount: number;
-
   translatedCurrencyName: string;
-
     lastOperation: string | any[];
     theFinalTotal: number;
     private sub: Subscription;
     private allRates: any;
-    public currentBase :string;
+    public currentBase: string;
     private currencyIndex: any;
     public moneyCurrencyIndex: number;
     public translatedMoneyCurrencyName: any;
-
-  constructor(private platform: Platform,private auth:AuthService,private animationCtrl: AnimationController, private db: DbServiceService, private http: HttpClient, private modalCtrl: ModalController, private categoryService: Category_operationsService, public loadingController: LoadingController,private route: ActivatedRoute) {
+  constructor(private animationCtrl: AnimationController,
+              private db: DbServiceService, private modalCtrl: ModalController,
+              private categoryService: Category_operationsService, public loadingController: LoadingController,
+              private route: ActivatedRoute) {
       this.sub = this.route.params.subscribe(params => {
-          this.id = +params.id
-      })
+          this.id = +params.id;
+      });
   }
-
  async ngOnInit() {
+     this.locenviroment = environment;
+     this.categoryService.getBanners().subscribe(resData => {
+        this.banners =  resData;
+      });
      this.getGlobalRatesObject();
      this.categoryService.getAllCharities();
      const loading = await this.loadingController.create({
          cssClass: 'my-custom-class',
-         duration:1000,
+         duration: 1000,
          mode: 'ios',
          spinner: 'circular',
      });
      await loading.present();
  }
     ionViewWillEnter() {
-
-        if(this.platform.is("cordova") || this.platform.is("capacitor")){
+        if (environment.is_local){
             this.db.getoperations().subscribe(data => {
                 this.lastOperation = data;
-            })
-
+            });
         }else{
-            this.categoryService.getAllOperations().subscribe(data=> {
-                console.log(data)
+            this.categoryService.getAllOperations().subscribe(data => {
                 this.lastOperation = data;
-            })
-            // this.sub = this.route.params.subscribe(params => {
-            //     this.id = +params.id
-            // })
+            });
         }
-        this.categoryService.getSettingObject().then(_ => {
-            this.currentBase =  this.categoryService.currencyCode
-            this.goldPrice = this.allRates.rates.gold * this.allRates.rates.rates[this.currentBase];
-
-            console.log(this.allRates.rates.rates[this.currentBase]);
-            console.log(this.goldPrice);
-            this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.currentBase];
-            this.currencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.currentBase);
-            console.log(this.currencyIndex);
-            this.translatedCurrencyName = this.categoryService.curreciesList[this.currencyIndex].name;
-            console.log(this.translatedCurrencyName);
-            // this.moneyCurrencyIndex = this.categoryService.curreciesList.findIndex(I => I.code == this.pickedCurrency);
-            // console.log(this.currencyIndex);
-            // this.translatedMoneyCurrencyName = this.categoryService.curreciesList['TRY'].name;
-            // console.log(this.translatedMoneyCurrencyName);
-        })
+        Storage.get({ key: 'setting' }).then(resp => {
+            if (resp && resp.value){
+                const setting = JSON.parse(resp.value);
+                this.currentBase =  setting.currency;
+                this.goldPrice = this.allRates.rates.gold * this.allRates.rates.rates[this.currentBase];
+                this.silverPrice = this.allRates.rates.silver * this.allRates.rates.rates[this.currentBase];
+                this.currencyIndex = this.categoryService.curreciesList.findIndex(I => I.code === this.currentBase);
+                this.translatedCurrencyName = this.categoryService.curreciesList[this.currencyIndex].name;
+            }
+        });
     }
-ionViewDidEnter () {
+ionViewDidEnter() {
              this.goldTotalPrice = 0;
              this.silverTotalPrice = 0;
              this.moneyTotalPrice = 0;
@@ -108,20 +92,24 @@ ionViewDidEnter () {
              this.stockTotalPrice = 0;
              this.mutualTotalPrice = 0;
              this.totalAmount = 0;
-    setTimeout(_=>{
+             setTimeout(_ => {
+        // tslint:disable: prefer-for-of
         for (let i = 0; i < this.lastOperation.length; i++) {
             if (this.lastOperation[i].category_id === 1) {
-                this.goldTotalPrice += (+this.lastOperation[i].d_val_1 + +this.lastOperation[i].d_val_2 * 0.875 + +this.lastOperation[i].d_val_3 * 0.75) * +this.goldPrice;
+                this.goldTotalPrice += (+this.lastOperation[i].d_val_1 +
+                    +this.lastOperation[i].d_val_2 * 0.875 +
+                    +this.lastOperation[i].d_val_3 * 0.75) * +this.goldPrice;
             } else if (this.lastOperation[i].category_id === 2) {
-
                 if (this.lastOperation[i].currency_type !== this.currentBase) {
-                    this.moneyTotalPrice += this.lastOperation[i].d_val_1 * (1 / this.allRates.rates.rates[this.lastOperation[i].currency_type]) * this.allRates.rates.rates[this.currentBase];
+                    this.moneyTotalPrice += this.lastOperation[i].d_val_1
+                    * (1 / this.allRates.rates.rates[this.lastOperation[i].currency_type])
+                    * this.allRates.rates.rates[this.currentBase];
                 }
                 if (this.lastOperation[i].currency_type == this.currentBase) {
                     this.moneyTotalPrice += +this.lastOperation[i].d_val_1;
                 }
             } else if (this.lastOperation[i].category_id === 3) {
-                this.tradeTotalPrice += +this.lastOperation[i].d_val_1
+                this.tradeTotalPrice += +this.lastOperation[i].d_val_1;
             } else if (this.lastOperation[i].category_id === 4) {
                 this.silverTotalPrice += this.lastOperation[i].d_val_1 * this.silverPrice;
             } else if (this.lastOperation[i].category_id === 5) {
@@ -130,11 +118,8 @@ ionViewDidEnter () {
                 this.mutualTotalPrice += +this.lastOperation[i].d_val_1 * +this.lastOperation[i].d_val_2;
             }
         }
-    }, 500)
-
-    setTimeout(() => {
-        console.log(this.getMoneyCurrencyName('TRY'));
-
+    }, 500);
+             setTimeout(() => {
         this.animationCtrl.create()
             .addElement(document.querySelector('.new'))
             .duration(500)
@@ -146,15 +131,12 @@ ionViewDidEnter () {
                 {offset: 0.75, background: '#012d26'},
                 {offset: 1, background: 'var(--background)'}
             ])
-                    .play()
-                }, 500)
-
+                    .play();
+                }, 500);
 }
     async getGlobalRatesObject() {
         const ret = await Storage.get({key: 'GLOBAL-RATES'});
         this.allRates = JSON.parse(ret.value);
-        console.log(this.allRates);
-        console.log(typeof (this.allRates.rates.gold))
         }
     async charityModal() {
       const homeCharityModal = await this.modalCtrl.create({
@@ -163,23 +145,22 @@ ionViewDidEnter () {
       });
       return await homeCharityModal.present();
     }
-    ionViewWillLeave () {
+    ionViewWillLeave() {
      this.id = -1;
      this.sub.unsubscribe();
 }
-
     async openBanner(bannerIndex) {
         const modal = await this.modalCtrl.create({
             component: BannerComponent,
             componentProps: {
-                banners: this.images,
-                index: bannerIndex
+                banners: this.banners,
+                id: bannerIndex
             }
         });
         modal.present();
     }
-    getMoneyCurrencyName (currency: string) {
-      let name = this.categoryService.curreciesList.filter(I => I.code == currency)
-        return name[0].name;
+    getMoneyCurrencyName(currency: string) {
+      const name = this.categoryService.curreciesList.filter(I => I.code === currency);
+      return name[0].name;
     }
 }

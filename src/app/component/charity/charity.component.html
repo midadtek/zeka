@@ -1,6 +1,6 @@
 
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" mode="ios">
     <ion-buttons slot="start">
       <ion-button (click)="onModalDismiss()">
         <ion-icon slot="icon-only" name="close"></ion-icon>
@@ -11,35 +11,46 @@
 </ion-header>
 
 <ion-content>
+  <div>
+    <img src="assets/images/charities.png" alt="charities">
+  </div>
 <ion-item class="ion-text-center" color="warning" *ngIf="currency && willPayValue">
   <ion-label>المبلغ {{willPayValue.toFixed(0)}} {{currency == 'TRY'? 'ليرة تركية' : (currency == 'USD'?'دولار':(currency == 'EUR'? 'يورو':currency))}}</ion-label>
 </ion-item>
 
   <ion-list>
 <ion-item>
-  <ion-label>اختر الجمعية</ion-label>
+  <ion-label> التبرع لصالح جمعية </ion-label>
   <ion-select mode="ios" name="charity" [(ngModel)]='selectedCharity' interface="action-sheet" (ionChange)="onSelect($event.target.value)">
     <ion-select-option *ngFor='let charity of charities' [value]="charity.id">{{ charity.charity_name }}</ion-select-option>
   </ion-select>
 </ion-item>
 </ion-list>
-  <ion-card mode="ios" style="margin: 0;">
-    <ion-card-header color="primary">
-      <ion-card-title>
-        {{singleCharity.charity_name}}
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content *ngIf="singleCharity">
-      <ion-item lines="none"  mode="ios">
-        <ion-textarea disabled="true">
-          {{singleCharity.charity_description}}
-        </ion-textarea>
-      </ion-item>
-    </ion-card-content>
+  <ion-card mode="ios" detail="false">
+    <ion-item lines="full">
+      <ion-thumbnail>
+        <ion-img  src="assets/images/logo.jpg"></ion-img>
+      </ion-thumbnail>
+      <ion-label class="ion-text-center">
+        <ion-text color="primary">
+          <h1>{{singleCharity.charity_name}}</h1>
+        </ion-text>
+        <ion-text class="ion-text-wrap ion-text-right" color="dark">
+          <p>{{singleCharity.charity_description}}</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item detail="false" lines="none">
+      <ion-chip outline="true" color="danger">
+        تركيا
+        <ion-icon name="navigate-circle-outline"></ion-icon>
+      </ion-chip>
+    </ion-item>
   </ion-card>
-  <div class="ion-text-center">
-  <ion-label>الحسابات البنكية</ion-label>
-  </div>
+  <ion-button expand='block' fill='outline' size='large' color="danger">
+    <ion-icon name="cash-outline"></ion-icon>
+    الحسابات البنكية
+  </ion-button>
   <ion-card mode="ios" *ngFor="let acc of charityBankInfo" style="margin: 40px 0 50px 0;" >
     <ion-card-header class="ion-text-center" color="primary">
       <ion-card-title>
@@ -75,7 +86,7 @@
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button>
-      <ion-icon name="share"></ion-icon>
+      <ion-icon name="share-social-outline"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="start" >
       <ion-fab-button *ngIf="singleCharity.youtube_link" (click)="openLink(singleCharity.youtube_link)"><ion-icon name="logo-youtube"></ion-icon></ion-fab-button>

@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar color="primary" class="ion-text-center">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" class="ion-text-center" mode="ios">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/zekat-category" text=""></ion-back-button>
     </ion-buttons>
@@ -8,6 +8,9 @@
 </ion-header>
 
 <ion-content >
+  <div>
+    <img src="assets/images/operations.png" alt="operations">
+  </div>
   <ion-card *ngIf='cat_ops?.length == 0'>
     <ion-card-content class="ion-text-center">فارغ</ion-card-content>
   </ion-card>

@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.midadtek.zakati;
 
 import android.os.Bundle;
 

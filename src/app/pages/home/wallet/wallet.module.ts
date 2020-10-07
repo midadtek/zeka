@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { WalletPageRoutingModule } from './wallet-routing.module';
 
 import { WalletPage } from './wallet.page';
-import {ComponentModule} from "../../../component/component.module";
+import {ComponentModule} from '../../../component/component.module';
 
 @NgModule({
     imports: [

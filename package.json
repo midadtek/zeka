@@ -1,7 +1,7 @@
 {
   "name": "zekat-app",
   "version": "0.0.1",
-  "author": "Ionic Framework",
+  "author": "MidadTek",
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ionic",

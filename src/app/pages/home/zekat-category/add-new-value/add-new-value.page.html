@@ -1,17 +1,20 @@
 <ion-header>
-  <ion-toolbar class="ion-text-center" color="primary">
+  <ion-toolbar class="ion-text-center" color="primary" mode="ios">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/zekat-category" text=""></ion-back-button>
     </ion-buttons>
     <ion-title>{{catEl?.category_name}}</ion-title>
   </ion-toolbar>
+  <div>
+    <img src="assets/images/calculate.png" alt="calculate">
+  </div>
 </ion-header>
 
 <ion-content>
 
   <ion-card *ngIf = 'catEl?.id == 1'>
     <ion-card-content>
-      نصاب الذهب هو قيمة 85 جرام عيار 24
+      نصاب الذهب = 85 جرام عيار 24
     </ion-card-content>
   </ion-card>
   <ion-card *ngIf = 'catEl?.id == 2'>

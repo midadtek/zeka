@@ -1,21 +1,38 @@
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" mode="ios">
     <ion-buttons slot="start">
         <ion-back-button defaultHref="/" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title  class="ion-text-center">أنواع الزكاة</ion-title>
+    <ion-title  class="ion-text-center">أقسام الزكاة</ion-title>
   </ion-toolbar>
+  <div class="login-logo">
+    <img src="assets/images/category.png" alt="category">
+  </div>
+
 </ion-header>
 
 <ion-content>
-  <ion-grid>
-    <ion-row>
-      <ion-col style="margin-top: 15px;" size-xs="6" size-lg = "6" size-md="4" *ngFor="let cat of zekat_category">
-<!--        <div   class="contentCol" (click)="onAddValue(cat?.id)">-->
-          <ion-img [src]="'assets/images/'+cat?.id+'.png'" class="contentCol" [routerLink]="cat?.id"></ion-img>
-<!--        </div>-->
-          <h3 style="margin-top:15px;" class="ion-text-center">{{cat?.category_name}}</h3>
+
+  <ion-grid  class="ion-no-padding">
+    <ion-row  class="ion-no-padding">
+      <ion-col size="6" class="ion-no-padding" *ngFor="let cat of zekat_category">
+        <ion-card mode="ios" [routerLink]="cat?.id" routerDirection="forward">
+          <ion-grid class="ion-no-padding">
+            <ion-row class="ion-no-padding">
+              <ion-col size="12" class="ion-no-padding">
+                <div class="container">
+                    <img [src]="'assets/images/'+cat?.id+'.png'" />  
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-item lines="none" color="primary">
+            <ion-label  class="ion-text-wrap ion-text-center">
+              {{cat?.category_name}}
+            </ion-label>
+          </ion-item>
+        </ion-card>
       </ion-col>
-    </ion-row>
-  </ion-grid>
+      </ion-row>
+      </ion-grid>
 </ion-content>
