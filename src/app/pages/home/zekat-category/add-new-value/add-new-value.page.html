@@ -1,0 +1,130 @@
+<ion-header>
+  <ion-toolbar class="ion-text-center" color="primary" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home/zekat-category" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{catEl?.category_name}}</ion-title>
+  </ion-toolbar>
+  <div>
+    <img src="assets/images/calculate.png" alt="calculate">
+  </div>
+</ion-header>
+
+<ion-content>
+
+  <ion-card *ngIf = 'catEl?.id == 1'>
+    <ion-card-content>
+      نصاب الذهب = 85 جرام عيار 24
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf = 'catEl?.id == 2'>
+    <ion-card-content>
+      نصاب المال هو قيمة 85 جرام عيار 24
+      اي ما يعادل {{(goldPrice * 85).toFixed(0)}} {{translatedMoneyCurrencyName}}
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf = 'catEl?.id == 3'>
+    <ion-card-content>
+      نصاب العروض التجارية هو قيمة 85 جرام من الذهب عيار 24
+      اي ما يعادل {{(goldPrice * 85).toFixed(0)}} {{translatedMoneyCurrencyName}}
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf = 'catEl?.id == 4'>
+    <ion-card-content>
+      نصاب الفضة هو قيمة 595 جرام من الفضة
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf = 'catEl?.id == 5'>
+    <ion-card-content>
+      نصاب الأسهم هو قيمة 85 جرام من الذهب عيار 24
+      اي ما يعادل {{(goldPrice * 85).toFixed(0)}} {{translatedMoneyCurrencyName}}
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf = 'catEl?.id == 6'>
+
+    <ion-card-content>
+      نصاب الصناديق الاستثمارية هو قيمة 85 جرام من الذهب عيار 24
+      اي ما يعادل {{(goldPrice * 85).toFixed(0)}} {{translatedMoneyCurrencyName}}
+    </ion-card-content>
+  </ion-card>
+
+
+
+  <form (ngSubmit)="onAddOperation(form)" #form="ngForm">
+    <ion-input name="category_id" type="hidden" [ngModel]="catEl?.id"></ion-input>
+    <ion-input name="category_name" type="hidden" [ngModel]="catEl?.category_name"></ion-input>
+    <ion-input name="country_id" type="hidden" [ngModel] ="catEl?.id"></ion-input>
+    <ion-input name="user_id" type="hidden" [ngModel] ="catEl?.id"></ion-input>
+    <ion-list>
+
+      <ion-item *ngIf='catEl?.id==2'>
+        <ion-label>اختر العملة</ion-label>
+        <ion-select mode="ios" name="currency_type" [ngModel]='currentBase' interface="action-sheet" (ionChange)="onSelect($event.target.value)">
+          <ion-select-option *ngFor='let option of availableCurrencies' [value]="option.code">{{ option.name }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="catEl?.id == 3 || catEl?.id == 5 || catEl?.id == 6">
+        <ion-label position="floating" *ngIf="catEl?.id == 3"> اسم عرض التجارة </ion-label>
+        <ion-label position="floating" *ngIf="catEl?.id == 5"> اسم السهم </ion-label>
+        <ion-label position="floating" *ngIf="catEl?.id == 6"> اسم الصندوق</ion-label>
+        <ion-input name="name" type="text" ngModel [required]='catEl?.id == 3 || catEl?.id != 5 || catEl?.id != 6'></ion-input>
+      </ion-item>
+
+
+
+      <ion-item *ngIf="catEl?.id == 1 || catEl?.id == 2 || catEl?.id == 3 || catEl?.id == 4 || catEl?.id == 5 || catEl?.id == 6">
+        <ion-label position="floating" *ngIf="catEl?.id == 1">الوزن بالجرام 24 قيراط</ion-label>
+        <ion-label position="floating" *ngIf="catEl?.id == 2">المبلغ</ion-label>
+        <ion-label position="floating" *ngIf="catEl?.id == 3">قيمة عرض التجارة</ion-label>
+        <ion-label position="floating" *ngIf="catEl?.id == 4">الوزن بالجرام</ion-label>
+        <ion-label position="floating" *ngIf="catEl?.id == 5">قيمة السهم</ion-label>
+        <ion-label position="floating" *ngIf="catEl?.id == 6">قيمة الصندوق</ion-label>
+        <ion-input name="d_val_1" type="number" ngModel [required]='catEl?.id != 1' min='1'></ion-input>
+      </ion-item>
+
+
+      <ion-item *ngIf="catEl?.id == 1 || catEl?.id == 5 || catEl?.id == 6" >
+        <ion-label position="floating" *ngIf="catEl?.id == 1">الوزن بالجرام 21 قيراط</ion-label>
+        <ion-label position="floating" *ngIf="catEl?.id == 5">عدد السهم</ion-label>
+        <ion-label position="floating" *ngIf="catEl?.id == 6">عدد الصناديق</ion-label>
+        <div style="display: flex;">
+          <ion-input name="d_val_2" type="number" ngModel [required]='catEl?.id != 1' min = '1'></ion-input>
+          <ion-input *ngIf="catEl?.id == 1" disabled='true' > = {{+form.value.d_val_2 * 0.875}} عيار 24</ion-input>
+        </div>
+      </ion-item>
+      <ion-item *ngIf="catEl?.id == 1" >
+        <ion-label position="floating" *ngIf="catEl?.id == 1">الوزن بالجرام 18 قيراط</ion-label>
+        <div style="display: flex;">
+          <ion-input name="d_val_3" type="number" ngModel [required]='catEl?.id != 1' min = '1'></ion-input>
+          <ion-input disabled='true' > = {{+form.value.d_val_3 * 0.75}} عيار 24</ion-input>
+        </div>
+      </ion-item>
+      <ion-item *ngIf='catEl?.id == 1 || catEl?.id == 4 ||catEl?.id == 5 || catEl?.id == 6'>
+        <ion-input  name="total" type="number" *ngIf='catEl?.id == 1' required disabled='true' ngModel>{{+form.value.d_val_1 + +form.value.d_val_2*0.875 + +form.value.d_val_3*0.75}} جرام </ion-input>
+        <ion-input  name="total" type="number" *ngIf='catEl?.id == 5' required disabled='true' ngModel>{{ +form.value.d_val_1 * +form.value.d_val_2}}{{translatedMoneyCurrencyName}}</ion-input>
+        <ion-input  name="total" type="number" *ngIf='catEl?.id == 4' required disabled='true' ngModel>{{ +form.value.d_val_1}}جرام</ion-input>
+        <ion-input  name="total" type="number" *ngIf='catEl?.id == 6' required disabled='true' ngModel>{{ +form.value.d_val_1 * +form.value.d_val_2 }}{{translatedMoneyCurrencyName}}</ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-list *ngIf='catEl?.id == 7'>
+      <ion-item>
+        <ion-label position="floating">  قيمة زكاة الفطر في {{translatedCountryName}}   {{getFitirValue(currentCountry)}}  {{translatedMoneyCurrencyName}}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">عدد الاشخاص المراد التزكية عنهم</ion-label>
+        <ion-input name = "fitir_member" type="number" ngModel></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input disabled = true>{{ getFitirValue(currentCountry) * +form.value.fitir_member }} {{translatedMoneyCurrencyName}}</ion-input>
+      </ion-item>
+      <ion-button expand='block' *ngIf = "catEl?.id === 7"  (click)="openCharityModal(getFitirValue(currentCountry) * form.value.fitir_member)" [disabled] = "getFitirValue(currentCountry) * form.value.fitir_member <= 0" >التوجه الى طرق الدفع</ion-button>
+    </ion-list>
+    <ion-button *ngIf='catEl?.id == 1' expand='block' type="submit" [disabled]=" (+form.value.d_val_1 + +form.value.d_val_2*0.875 + +form.value.d_val_3*0.75) == 0">احسب</ion-button>
+    <ion-button *ngIf='catEl?.id == 4 || catEl?.id == 2' expand='block' type="submit" [disabled]="!form.value.d_val_1">احسب</ion-button>
+    <ion-button *ngIf='catEl?.id == 3' expand='block' type="submit" [disabled]="!form.value.d_val_1 || !form.value.name">احسب</ion-button>
+    <ion-button *ngIf='catEl?.id == 5 || catEl?.id == 6' expand='block' type='submit' [disabled]="(+form.value.d_val_1 * +form.value.d_val_2 == 0) || !form.value.name">احسب</ion-button>
+  </form>
+
+</ion-content>

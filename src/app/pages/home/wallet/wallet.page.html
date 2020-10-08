@@ -1,0 +1,130 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" mode="ios">
+    <ion-menu-button color="light" slot="end"></ion-menu-button>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">المحفظة</ion-title>
+  </ion-toolbar>
+  <div>
+    <img src="assets/images/wallet.png" alt="wallet">
+  </div>
+</ion-header>
+<ion-content *ngIf='isEmpty; else operationContent'>
+  <ion-card>
+    <ion-card-content>
+      <ion-row class='ion-text-center'>
+        <ion-col>
+          <ion-label> لايوجد عمليات</ion-label>
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<ng-template #operationContent>
+<ion-content>
+  <ion-list>
+    <ion-item-sliding *ngIf='goldOperations && goldOperations.length!=0'>
+      <ion-item-options side="start">
+        <ion-item-option>
+          <ion-icon slot="icon-only" name="trash" (click)="presentAlertConfirm(1)"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
+    <ion-item *ngIf='goldOperations && goldOperations.length!=0' routerLink = '/home/wallet/1'>
+      <ion-thumbnail>
+        <img src="assets/images/1.png">
+      </ion-thumbnail>
+      <ion-label class="ion-text-wrap" *ngIf='goldOperations'><h1>{{goldOperations[0].category_name}}</h1></ion-label>
+      <ion-label class="ion-text-wrap">{{gold_total}} جرام 24 قيراط </ion-label>
+    </ion-item>
+    </ion-item-sliding>
+
+    <ion-item-sliding *ngIf='moneyOperations && moneyOperations.length!=0'>
+      <ion-item-options side="start">
+        <ion-item-option (click)="presentAlertConfirm(2)">
+          <ion-icon slot="icon-only" name="trash" ></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    <ion-item *ngIf='moneyOperations && moneyOperations.length!=0' routerLink = '/home/wallet/2'>
+      <ion-thumbnail>
+        <img src="assets/images/2.png">
+      </ion-thumbnail>
+      <ion-label class="ion-text-wrap" *ngIf='moneyOperations' ><h1>{{moneyOperations[0].category_name}}</h1></ion-label>
+      <ion-label class="ion-text-wrap">{{totalTransformedMoney.toFixed(2)}} {{translatedCurrencyName}}</ion-label>
+    </ion-item>
+    </ion-item-sliding>
+
+    <ion-item-sliding *ngIf='tradeOperations && tradeOperations.length!=0'>
+      <ion-item-options side="start">
+        <ion-item-option>
+          <ion-icon slot="icon-only" name="trash" (click)="presentAlertConfirm(3)"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    <ion-item *ngIf='tradeOperations && tradeOperations.length!=0' routerLink = '/home/wallet/3'>
+      <ion-thumbnail>
+        <img src="assets/images/3.png">
+      </ion-thumbnail>
+      <ion-label class="ion-text-wrap" *ngIf='tradeOperations'><h1>{{tradeOperations[0].category_name}}</h1></ion-label>
+      <ion-label class="ion-text-wrap"> {{tradeOperations_total.toFixed(2)}} {{translatedCurrencyName}}</ion-label>
+    </ion-item>
+    </ion-item-sliding>
+
+    <ion-item-sliding *ngIf='silverOperations && silverOperations.length!=0'>
+      <ion-item-options side="start">
+        <ion-item-option>
+          <ion-icon slot="icon-only" name="trash" (click)="presentAlertConfirm(4)"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    <ion-item *ngIf='silverOperations && silverOperations.length!=0' routerLink = '/home/wallet/4'>
+      <ion-thumbnail>
+        <img src="assets/images/4.png">
+      </ion-thumbnail>
+      <ion-label class="ion-text-wrap" *ngIf='silverOperations'><h1>{{silverOperations[0].category_name}}</h1></ion-label>
+      <ion-label class="ion-text-wrap">{{silverOperations_total}} جرام</ion-label>
+    </ion-item>
+    </ion-item-sliding>
+
+    <ion-item-sliding *ngIf='stocksOperations && stocksOperations.length!=0'>
+      <ion-item-options side="start">
+        <ion-item-option>
+          <ion-icon slot="icon-only" name="trash" (click)="presentAlertConfirm(5)"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    <ion-item *ngIf='stocksOperations && stocksOperations.length!=0' routerLink = '/home/wallet/5'>
+      <ion-thumbnail>
+        <img src="assets/images/5.png">
+      </ion-thumbnail>
+      <ion-label class="ion-text-wrap" *ngIf='stocksOperations'><h1>{{stocksOperations[0].category_name}}</h1></ion-label>
+      <ion-label class="ion-text-wrap"> {{stocksOperations_total.toFixed(2)}} {{translatedCurrencyName}}</ion-label>
+    </ion-item>
+    </ion-item-sliding>
+
+    <ion-item-sliding *ngIf='Mutual_fundsOperations && Mutual_fundsOperations.length!=0'>
+      <ion-item-options side="start">
+        <ion-item-option (click)="presentAlertConfirm(6)">
+          <ion-icon slot="icon-only" name="trash" ></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    <ion-item *ngIf='Mutual_fundsOperations && Mutual_fundsOperations.length!=0' routerLink = '/home/wallet/6'>
+      <ion-thumbnail>
+        <img src="assets/images/6.png">
+      </ion-thumbnail>
+      <ion-label class="ion-text-wrap" *ngIf='Mutual_fundsOperations'><h1>{{Mutual_fundsOperations[0].category_name}}</h1></ion-label>
+      <ion-label class="ion-text-wrap"> {{Mutual_fundsOperations_total.toFixed(2)}} {{translatedCurrencyName}}</ion-label>
+    </ion-item>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
+
+  <ion-footer>
+    <ion-button
+            expand="block"
+            mode="ios"
+            (click)= "onOpenCharityModal()"
+            [disabled]="((gold_total * goldPrice * 0.025) + (totalTransformedMoney * 0.025) + (tradeOperations_total * 0.025) + (silverOperations_total * silverPrice * 0.025) + (stocksOperations_total * 0.025) + (Mutual_fundsOperations_total * 0.025) ) < goldPrice * 85 * 0.025">
+      التوجه الى طرق الدفع
+      {{!((gold_total * goldPrice * 0.025) + (totalTransformedMoney * 0.025) + (tradeOperations_total * 0.025) + (silverOperations_total * silverPrice * 0.025) + (stocksOperations_total * 0.025) + (Mutual_fundsOperations_total * 0.025)) ? ' 0 ' : ((gold_total * goldPrice * 0.025) + (totalTransformedMoney * 0.025) + (tradeOperations_total * 0.025) + (silverOperations_total * silverPrice * 0.025) + (stocksOperations_total * 0.025) + (Mutual_fundsOperations_total * 0.025)).toFixed(2)}}  {{translatedCurrencyName}}
+    </ion-button>
+  </ion-footer>
+</ng-template>

@@ -1,0 +1,19 @@
+<!--<ion-header class="ion-no-border" style="background-color: white;">-->
+<!--  <ion-toolbar>-->
+
+
+<!--  </ion-toolbar>-->
+<!--</ion-header>-->
+<ion-content (click)="next()" >
+  <ion-progress-bar color="primary" [value]="ptime" reversed="true"></ion-progress-bar>
+  <ion-grid class="ion-no-padding" style="height: 100%">
+    <ion-row class="ion-justify-content-center ion-align-items-center ion-no-padding"  style="height: 100%; flex-direction: column">
+      <img [src]="locenvironment.base_url + '/storage/' + banners[index].img_url"  style="width: 100%;" />
+    </ion-row>
+  </ion-grid>
+  <ion-fab vertical="top" horizontal="end" >
+    <ion-fab-button color="medium" size="small" (click)="close()" >
+      <ion-icon name="close"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

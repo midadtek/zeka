@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">zekat_app</string>
+    <string name="title_activity_main">zekat_app</string>
+    <string name="package_name">com.midadtek.zakati</string>
+    <string name="custom_url_scheme">com.midadtek.zakati</string>
+</resources>

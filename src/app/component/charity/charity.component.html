@@ -1,0 +1,101 @@
+
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" mode="ios">
+    <ion-buttons slot="start">
+      <ion-button (click)="onModalDismiss()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">الجمعيات</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div>
+    <img src="assets/images/charities.png" alt="charities">
+  </div>
+<ion-item class="ion-text-center" color="warning" *ngIf="currency && willPayValue">
+  <ion-label>المبلغ {{willPayValue.toFixed(0)}} {{currency}}</ion-label>
+</ion-item>
+
+  <ion-list>
+<ion-item>
+  <ion-label> التبرع لصالح جمعية </ion-label>
+  <ion-select mode="ios" name="charity" [(ngModel)]='selectedCharity' interface="action-sheet" (ionChange)="onSelect($event.target.value)">
+    <ion-select-option *ngFor='let charity of charities' [value]="charity.id">{{ charity.charity_name }}</ion-select-option>
+  </ion-select>
+</ion-item>
+</ion-list>
+  <ion-card mode="ios" detail="false">
+    <ion-item lines="full">
+      <ion-thumbnail>
+        <ion-img  [src]="locenvironment.base_url + '/storage/' + singleCharity?.charity_logo"></ion-img>
+      </ion-thumbnail>
+      <ion-label class="ion-text-center">
+        <ion-text color="primary">
+          <h1>{{singleCharity.charity_name}}</h1>
+        </ion-text>
+        <ion-text class="ion-text-wrap ion-text-right" color="dark">
+          <p>{{singleCharity.charity_description}}</p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+    <ion-item detail="false" lines="none">
+      <ion-chip outline="true" color="danger">
+        {{singleCharity.charity_country}}
+        <ion-icon name="navigate-circle-outline"></ion-icon>
+      </ion-chip>
+    </ion-item>
+  </ion-card>
+  <ion-button expand='block' fill='outline' size='large' color="danger">
+    <ion-icon name="cash-outline"></ion-icon>
+    الحسابات البنكية
+  </ion-button>
+  <ion-card mode="ios" *ngFor="let acc of charityBankInfo" style="margin: 40px 0 50px 0;" >
+    <ion-card-header class="ion-text-center" color="primary">
+      <ion-card-title>
+        {{acc?.bank_name}}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item mode="ios">
+          <ion-label class="ion-text-wrap">اسم الفرع : {{acc?.branch_name}}</ion-label>
+        </ion-item>
+        <ion-item mode="ios">
+          <ion-label class="ion-text-wrap">اسم الحساب : {{acc?.account_name}}</ion-label>
+        </ion-item>
+        <ion-item mode="ios">
+          <ion-label class="ion-text-wrap">رقم الحساب : {{acc?.account_number}}</ion-label><ion-icon name="clipboard-outline" (click)="copy(acc?.account_number)"></ion-icon>
+        </ion-item>
+        <ion-item mode="ios">
+          <ion-label class="ion-text-wrap">السويفت كود : {{acc?.swift_code}}</ion-label><ion-icon name="clipboard-outline" (click)="copy(acc?.swift_code)"></ion-icon>
+        </ion-item>
+        <ion-item *ngIf="acc?.USD_IBAN" mode="ios">
+          <ion-label class="ion-text-wrap" >USD IBAN : {{acc?.USD_IBAN}}</ion-label><ion-icon name="clipboard-outline" (click)="copy(acc?.USD_IBAN)"></ion-icon>
+        </ion-item>
+        <ion-item *ngIf="acc?.EUR_IBAN" mode="ios">
+          <ion-label class="ion-text-wrap" >EUR IBAN : {{acc?.EUR_IBAN}}</ion-label><ion-icon name="clipboard-outline" (click)="copy(acc?.EUR_IBAN)"></ion-icon>
+        </ion-item>
+        <ion-item *ngIf="acc?.LOCAL_IBAN" mode="ios">
+          <ion-label class="ion-text-wrap">TR IBAN : {{acc?.LOCAL_IBAN}}</ion-label><ion-icon name="clipboard-outline" (click)="copy(acc?.LOCAL_IBAN)"></ion-icon>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="share-social-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="start" >
+      <ion-fab-button *ngIf="singleCharity.youtube_link" (click)="openLink(singleCharity.youtube_link)"><ion-icon name="logo-youtube"></ion-icon></ion-fab-button>
+
+      <ion-fab-button *ngIf="singleCharity.facebook_link" (click)="openLink(singleCharity.facebook_link)"><ion-icon name="logo-facebook"></ion-icon></ion-fab-button>
+
+      <ion-fab-button *ngIf="singleCharity.instagram_link" (click)="openLink(singleCharity.instagram_link)"><ion-icon name="logo-instagram"></ion-icon></ion-fab-button>
+
+      <ion-fab-button *ngIf="singleCharity.twitter_link" (click)="openLink(singleCharity.twitter_link)"><ion-icon name="logo-twitter"></ion-icon></ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+</ion-content>

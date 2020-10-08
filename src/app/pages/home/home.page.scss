@@ -1,0 +1,30 @@
+.title {
+  font-size: 30px;
+}
+ion-img {
+  object-fit: cover;
+}
+
+.forecast_container{
+  overflow-x: auto !important;
+  overflow-y: hidden;
+  word-wrap: break-word;
+  border-bottom: 1px solid green !important;
+
+}
+// ion-content {
+//   --overflow: hidden;
+// }
+.column{
+  // border-radius: 50% !important;
+  // border: 3px solid green;
+
+}
+
+div.contentCol{
+  height: 100px;
+  //width: 100px;
+  border: 1px solid blue;
+  background-color: lightblue;
+  border-radius: 10px;
+}

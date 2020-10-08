@@ -1,0 +1,38 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" mode="ios">
+    <ion-buttons slot="start">
+        <ion-back-button defaultHref="/" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title  class="ion-text-center">أقسام الزكاة</ion-title>
+  </ion-toolbar>
+  <div class="login-logo">
+    <img src="assets/images/category.png" alt="category">
+  </div>
+
+</ion-header>
+
+<ion-content>
+
+  <ion-grid  class="ion-no-padding">
+    <ion-row  class="ion-no-padding">
+      <ion-col size="6" class="ion-no-padding" *ngFor="let cat of zekat_category">
+        <ion-card mode="ios" [routerLink]="cat?.id" routerDirection="forward">
+          <ion-grid class="ion-no-padding">
+            <ion-row class="ion-no-padding">
+              <ion-col size="12" class="ion-no-padding">
+                <div class="container">
+                    <img [src]="'assets/images/'+cat?.id+'.png'" />  
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-item lines="none" color="primary">
+            <ion-label  class="ion-text-wrap ion-text-center">
+              {{cat?.category_name}}
+            </ion-label>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+      </ion-row>
+      </ion-grid>
+</ion-content>

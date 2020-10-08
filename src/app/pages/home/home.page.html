@@ -1,0 +1,133 @@
+<!-- <ion-header class="ion-no-border">
+  <ion-toolbar color="primary" >
+    <ion-buttons slot="start">
+      <ion-button routerLink="/setting"><ion-icon name="settings"></ion-icon></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header> -->
+<ion-content>
+  <ion-fab vertical="top" horizontal="start" slot="fixed">
+    <ion-fab-button routerLink="/setting" size="small" fill="outline">
+      <ion-icon name="settings"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <div class="login-logo">
+    <img src="assets/images/dashboard.png" alt="dashboard">
+  </div>
+  <ion-grid>
+    <ion-row class="forecast_container ion-nowrap">
+      <ion-col (click)="openBanner(banner.id)" *ngFor="let banner of banners">
+        <ion-thumbnail class="column">
+          <img [src]="locenviroment.base_url+'/storage/'+banner.img_url"/>
+        </ion-thumbnail>
+      </ion-col>      
+    </ion-row>
+  </ion-grid>
+<ion-grid  class="ion-no-padding">
+  <ion-row  class="ion-no-padding">
+    <ion-col size="6" class="ion-no-padding">
+      <ion-card mode="ios" [routerLink]="['/home/zekat-category']" routerDirection="forward">
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-no-padding">
+            <ion-col size="12" class="ion-no-padding">
+              <div class="container">
+                  <img src="assets/images/dashboard2.jpg" />  
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item lines="none" color="primary">
+          <ion-label  class="ion-text-wrap ion-text-center">
+            حاسبة الزكاة 
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+    <ion-col size="6" class="ion-no-padding">
+      <ion-card mode="ios" [routerLink]="['/home/fatwa']" routerDirection="forward">
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-no-padding">
+            <ion-col size="12" class="ion-no-padding">
+              <div class="container">
+                  <img src="assets/images/dashboard1.jpg" />  
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item lines="none" color="primary">
+          <ion-label  class="ion-text-wrap ion-text-center">
+            فتاوى الزكاة
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="6" class="ion-no-padding">
+      <ion-card mode="ios" [routerLink]="['/home/wallet']" routerDirection="forward">
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-no-padding">
+            <ion-col size="12" class="ion-no-padding">
+              <div class="container">
+                  <img src="assets/images/dashboard4.jpg" />  
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item lines="none" color="primary">
+          <ion-label  class="ion-text-wrap ion-text-center">
+            المحفظة 
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+    <ion-col size="6" class="ion-no-padding">
+      <ion-card mode="ios" (click) = 'charityModal()'>
+        <ion-grid class="ion-no-padding">
+          <ion-row class="ion-no-padding">
+            <ion-col size="12" class="ion-no-padding">
+              <div class="container">
+                  <img src="assets/images/dashboard3.jpg" />  
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item lines="none" color="primary">
+          <ion-label  class="ion-text-wrap ion-text-center">
+            الجمعيات 
+          </ion-label>
+        </ion-item>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<ion-list style="border: 1px solid #306b00; border-radius: 15px; box-shadow: 5px 5px transparent;margin: 10px;" *ngIf="lastOperation && lastOperation.length !== 0">
+  <ion-item >
+    <ion-label>رصيد المحفظة  {{ !(goldTotalPrice + moneyTotalPrice + tradeTotalPrice + silverTotalPrice + stockTotalPrice + mutualTotalPrice) ? '0' : (goldTotalPrice + moneyTotalPrice + tradeTotalPrice + silverTotalPrice + stockTotalPrice + mutualTotalPrice).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-label>مقدار الزكاة للقيم المدخلة {{((goldTotalPrice+moneyTotalPrice+tradeTotalPrice+silverTotalPrice+stockTotalPrice+mutualTotalPrice) * 0.025 ).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-label>نصاب الزكاة هو : {{(+goldPrice * 85).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+  </ion-item>
+</ion-list>
+<!--  page content-->
+  <ion-list style="align-content: space-between;" *ngIf="lastOperation">
+    <ion-list-header *ngIf="lastOperation.length !== 0">
+      <ion-label>آخر العمليات</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor='let lasOpe of lastOperation '>
+      <ion-label style="justify-content: space-between; display: flex" [class]="lasOpe?.id == id ? 'new' : ''">
+        <ion-label> نوع الزكاة : <span style="font-style: italic">{{ lasOpe?.category_name }}</span></ion-label>
+      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==1'> {{ (+lasOpe?.d_val_1 + +lasOpe?.d_val_2 * 0.875 + +lasOpe?.d_val_3 * 0.75).toFixed(0)}} جرام 24 قيراط</ion-label>
+      <ion-label style="font-size: 15px;  "  *ngIf='lasOpe?.category_id==4'>  {{ lasOpe?.d_val_1.toFixed(0)}} جرام</ion-label>
+      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==5 || lasOpe?.category_id==6'>  {{ (lasOpe?.d_val_1 * lasOpe?.d_val_2).toFixed(0)}} {{ translatedCurrencyName}}</ion-label>
+      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==2'> {{ lasOpe?.d_val_1}} {{getMoneyCurrencyName(lasOpe?.currency_type)}}</ion-label>
+      <ion-label style="font-size: 15px;  " *ngIf='lasOpe?.category_id==3'> {{ (lasOpe?.d_val_1).toFixed(0)}} {{translatedCurrencyName}}</ion-label>
+      </ion-label>
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>
